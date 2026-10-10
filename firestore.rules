@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  match /learners/{uid} {
+   function owner(){return request.auth != null && request.auth.uid == uid;}
+   function valid(p){return p.keys().hasOnly(['nickname','avatar','language','uiLanguage','known','completed','stars','totalEarned','totalSpent','owned','minutes','goal','practiceDays','streak']) && p.nickname is string && p.nickname.size()>0 && p.nickname.size()<=20 && p.avatar in ['fox','cat','dog','panda','koala','rabbit','bear','frog','owl','penguin','duck','lion','tiger','monkey','pig','mouse','raccoon','elephant','deer','sloth'] && p.language in ['vi','en','zh'] && p.uiLanguage in ['vi','en','zh'] && p.known is list && p.known.size()<=9000 && p.known.toSet().size()==p.known.size() && p.completed is list && p.completed.size()<=9000 && p.completed.toSet().size()==p.completed.size() && p.owned is list && p.owned.toSet().size()==p.owned.size() && p.owned.hasAll([25,133,3]) && p.owned.hasOnly([25,133,3,6,9,94,131,282,448,143,149,445]) && p.stars is int && p.stars>=0 && p.totalEarned is int && p.totalSpent is int && p.totalEarned==p.completed.size() && p.stars==p.totalEarned-p.totalSpent && p.minutes is int && p.minutes>=0 && p.goal in [5,10,15] && p.practiceDays is list && p.practiceDays.size()<=9000 && p.streak is int && p.streak>=1;}
+   function price(id){return id in [6,9]?8:id==94?15:id==131?18:id==282?20:id==448?25:id==143?28:id==149?35:id==445?45:1000000;}
+   function settings(){return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nickname','avatar','goal','language','uiLanguage']);}
+   function unlearn(){return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['known']) && resource.data.known.hasAll(request.resource.data.known);}
+   function relearn(){let a=resource.data;let b=request.resource.data;return b.diff(a).affectedKeys().hasOnly(['known']) && b.known.hasAll(a.known) && b.known.size()==a.known.size()+1 && (a.completed.hasAny(['learn:'+b.known[b.known.size()-1]]) || a.completed.hasAny(['solve:'+b.known[b.known.size()-1]]));}
+   function reward(){let a=resource.data;let b=request.resource.data;return b.diff(a).affectedKeys().hasOnly(['known','completed','stars','totalEarned','minutes','practiceDays']) && b.completed.size()==a.completed.size()+1 && b.completed.hasAll(a.completed) && b.completed[b.completed.size()-1].matches('^(learn|solve):(vi|en|zh):[a-z0-9-]+$') && b.completed[b.completed.size()-1].size()<=180 && b.stars==a.stars+1 && b.totalEarned==a.totalEarned+1 && b.minutes==a.minutes+1 && b.known.hasAll(a.known) && b.known.size()<=a.known.size()+1 && b.practiceDays.hasAll(a.practiceDays) && b.practiceDays.size()<=a.practiceDays.size()+1;}
+   function purchase(){let a=resource.data;let b=request.resource.data;return b.diff(a).affectedKeys().hasOnly(['owned','stars','totalSpent']) && b.owned.size()==a.owned.size()+1 && b.owned.hasAll(a.owned) && b.totalSpent==a.totalSpent+price(b.owned[b.owned.size()-1]) && b.stars==a.stars-price(b.owned[b.owned.size()-1]);}
+   allow read: if owner();
+   allow create: if owner() && valid(request.resource.data) && request.resource.data.stars==0 && request.resource.data.totalEarned==0 && request.resource.data.totalSpent==0 && request.resource.data.owned==[25,133,3] && request.resource.data.known==[] && request.resource.data.minutes==0 && request.resource.data.practiceDays==[];
+   allow update: if owner() && valid(request.resource.data) && (settings() || unlearn() || relearn() || reward() || purchase());
+   allow delete: if false;
+  }
+ }
+}
