@@ -72,3 +72,6 @@ function syncLearner(){
 learner.addEventListener('change',syncLearner);
 if(learner===directAccount){await learner.init();if(!window.LINGUA_FIREBASE?.projectId)learner.demo();}
 syncLearner();
+
+const returnLink=document.getElementById('return-lingua');
+if(returnLink)returnLink.onclick=event=>{if(window.parent!==window && window.parent?.LinguaAccount){event.preventDefault();leave();window.parent.postMessage({type:'lingua:close-duel'},location.origin);}};

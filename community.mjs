@@ -20,7 +20,9 @@ function renderShop(){const p=account.profile;if(!p)return;$('wallet-stars').tex
 }
 $('shop-grid').onclick=async e=>{const b=e.target.closest('[data-buy]');if(!b||b.disabled||purchasing)return;purchasing=true;renderShop();try{await account.mutate({type:'buy',id:Number(b.dataset.buy)});}catch(error){$('toast').textContent=error.message;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3500);}finally{purchasing=false;renderShop();}};
 $('open-duel').onclick=()=>{$('duel-embed').hidden=false;if(!$('pokemon-frame').getAttribute('src'))$('pokemon-frame').src='duel.html';$('word-choice-panel').hidden=true;$('game-layout').hidden=true;$('duel-embed').scrollIntoView({behavior:'smooth',block:'start'});};
-$('close-duel').onclick=()=>{$('duel-embed').hidden=true;$('pokemon-frame').removeAttribute('src');$('word-choice-panel').hidden=false;$('game-layout').hidden=true;};
+function closeDuel(){$('duel-embed').hidden=true;$('pokemon-frame').removeAttribute('src');$('word-choice-panel').hidden=false;$('game-layout').hidden=true;$('open-duel').focus();}
+$('close-duel').onclick=closeDuel;
+window.addEventListener('message',event=>{if(event.origin===location.origin && event.source===$('pokemon-frame').contentWindow && event.data?.type==='lingua:close-duel')closeDuel();});
 // Translate navigation and the main account/shop actions; course content uses its own selector.
 const labels={en:['My day','Learn words','Play & practice','Story garden','My progress','Pokémon Shop','My profile'],vi:['Ngày của mình','Học từ mới','Chơi & luyện tập','Vườn truyện','Tiến bộ của mình','Cửa hàng Pokémon','Hồ sơ của mình'],zh:['我的一天','学习单词','玩与练习','故事花园','我的进步','宝可梦商店','我的资料']};
 function localize(ui){const order=['today','learn','play','stories','progress','shop','profile'];order.forEach((id,i)=>{const node=document.querySelector(`[data-view="${id}"] span:nth-child(2)`);if(node)node.textContent=labels[ui]?.[i]||labels.en[i];});document.documentElement.lang=ui;
