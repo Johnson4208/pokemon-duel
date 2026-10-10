@@ -74,4 +74,4 @@ if(learner===directAccount){await learner.init();if(!window.LINGUA_FIREBASE?.pro
 syncLearner();
 
 const returnLink=document.getElementById('return-lingua');
-if(returnLink)returnLink.onclick=event=>{if(window.parent!==window && window.parent?.LinguaAccount){event.preventDefault();leave();window.parent.postMessage({type:'lingua:close-duel'},location.origin);}};
+if(returnLink)returnLink.onclick=event=>{if(window.parent!==window && window.parent?.LinguaAccount){const closeButton=window.parent.document.getElementById('close-duel');if(closeButton){event.preventDefault();leave();closeButton.click();}}};
