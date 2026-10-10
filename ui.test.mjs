@@ -31,3 +31,10 @@ test('app initialization, selection, practice through result, rematch and exit',
  el('exit-battle').click();assert.equal(el('confirm-dialog').open,true);el('confirm-leave').click();assert.equal(el('battle').hidden,true);assert.equal(el('lobby').hidden,false);assert.equal(el('confirm-dialog').open,false);
 });
 test('invalid room code and unavailable connection library show readable feedback',()=>{el('room-code').value='BAD';el('join-room').click();assert.match(el('toast').textContent,/8 ký tự/);el('create-room').click();assert.equal(el('network-error').hidden,false);assert.match(el('network-error').textContent,/Thư viện/);});
+
+test('return to Lingua closes the embedded battle without navigating inside the frame',()=>{
+ const messages=[];window.parent.postMessage=(data,origin)=>messages.push({data,origin});location.origin='https://example.github.io';
+ el('practice').click();let prevented=false;el('return-lingua').onclick({preventDefault(){prevented=true;}});
+ assert.equal(prevented,true);assert.equal(el('battle').hidden,true);assert.equal(el('lobby').hidden,false);assert.ok(![...timers.values()].some(t=>t.ms===950));
+ assert.deepEqual(messages,[{data:{type:'lingua:close-duel'},origin:location.origin}]);
+});
