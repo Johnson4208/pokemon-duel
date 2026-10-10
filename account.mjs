@@ -1,4 +1,4 @@
-import {freshProfile,reduceProfile,AVATARS} from './profile-model.mjs';
+import {freshProfile,reduceProfile,AVATARS} from './profile-model.mjs?v=collection-v3';
 export class Account extends EventTarget {
  constructor(){super();this.profile=null;this.user=null;this.ready=false;this.guest=false;this.epoch=0;this.queue=Promise.resolve();}
  emit(){this.dispatchEvent(new Event('change'));}

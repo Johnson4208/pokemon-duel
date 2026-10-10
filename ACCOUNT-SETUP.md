@@ -14,12 +14,12 @@ The Firestore SDK loads from Google's CDN only when a Firebase project is config
 
 ## Stars and collection
 
-- Every new account starts at 0 stars with Pikachu, Eevee, and Venusaur (Bulbasaur's final evolution).
+- Every account starts at 0 stars and can freely select Pikachu, Eevee, Bulbasaur, Charmander, Squirtle, Jigglypuff, Psyduck, Meowth, Vulpix, Rowlet, Riolu, and Venusaur. Existing documents retain their original three stored starters; the other free picks are granted by the catalog without changing saved records.
 - Mark a vocabulary entry learned for the first time: +1 star. Solve its word puzzle for the first time: +1 star. Vietnamese, English, and Chinese each have separate completion records but share the account's wallet.
 - Repeating a reward, unmarking/relearning a word, or replaying a puzzle does not mint another star. Stars never come from battle wins.
-- Shop: Charizard 8; Blastoise 8; Gengar 15; Lapras 18; Gardevoir 20; Lucario 25; Snorlax 28; Dragonite 35; Garchomp 45 stars.
-- Firestore transactions read the current cloud balance before charging. Spending and adding the Pokémon happen together. Insufficient balance and duplicate purchases are rejected. Signing out clears the displayed account and destroys the embedded battle.
-- The rules restrict profile reads/writes to the authenticated owner and validate wallet arithmetic, reward increments, and exact shop prices. Learning completion is a trust-based client activity; these rules are not a server-side exam validator or a competitive anti-cheat system. Peer battle inventory restrictions are enforced by the normal app UI; modified clients are not prevented by an authoritative battle server.
+- Shop: Charizard 8; Blastoise 8; Arcanine 10; Umbreon 12; Sylveon 12; Gengar 15; Mimikyu 15; Lapras 18; Gardevoir 20; Greninja 22; Lucario 25; Snorlax 28; Incineroar 30; Dragonite 35; Salamence 40; Garchomp 45; Mew 45; Mewtwo 50; Rayquaza 60; Groudon 65; Kyogre 65 stars. These are minimum requirements. Each confirmed exchange consumes the entire current star wallet and resets it to 0, including surplus stars. Lifetime earned stars and learning progress remain saved.
+- Firestore transactions read the current cloud balance before exchanging. A stale confirmation is rejected if the wallet changes. Spending and adding the Pokémon happen together. Insufficient balance and duplicate purchases are rejected. Signing out clears the displayed account and destroys the embedded battle.
+- The rules restrict profile reads/writes to the authenticated owner and validate wallet arithmetic, reward increments, and shop thresholds and full-wallet resets. Learning completion is a trust-based client activity; these rules are not a server-side exam validator or a competitive anti-cheat system. Peer battle inventory restrictions are enforced by the normal app UI; modified clients are not prevented by an authoritative battle server.
 
 ## Languages and avatars
 
@@ -36,3 +36,15 @@ Run: `node --test tests/*.test.mjs pokemon/tests/*.test.mjs`
 Automated verification covers reward idempotency, exact Shop prices, account isolation, switching users while a mutation is queued, separate language progress, battle mechanics, and two simulated peer clients. Cloud account tests use a simulated Firestore transaction adapter; live Auth, Firestore rules, and cross-device synchronization still require a configured Firebase project and real account checks.
 
 Online duels retain the earlier PeerJS/WebRTC connection setup. Some networks need your own TURN server configured in pokemon/config.js. The prior live two-player browser test timed out; successful two-device connectivity has not been verified. AI practice is available without peer networking.
+
+## Collection update: Firebase owner action
+
+Before signed-in learners use the expanded Shop, open Firebase Console → little-lingua-ab674 → Build → Firestore Database → Rules. Replace the rules with this release’s complete `firestore.rules`, then click Publish. Existing rules charge only the item price and will reject the new full-wallet reset and new species. The app shows an error and keeps the balance/collection unchanged if Firestore rejects a save.
+
+Verify using an account with more than 8 stars: exchange for Charizard, confirm 0 stars, sign out and back in, and check Charizard is still unlocked. Then earn one new star and verify it is saved as 1. Sign in with another user to check their independent balance. Automated cloud tests use a mock adapter; publishing rules and live account synchronization still need verification.
+
+## Ranking and battle effects
+
+Selection is adapted for children from the transcript of WolfeyVGC’s “I Ranked Literally Every Pokemon”: https://www.youtube.com/watch?v=1QwPt9YsnOE . The video combines competitive performance, recognizability, and design; its positions are not a pure popularity chart. We retain the original familiar species and past purchases, add more friendly free choices, and choose notable evolved/legendary rewards instead of importing the whole 1,025-species ranking. Video top-ten reward picks include Kyogre (#1), Groudon (#2), Charizard (#3), Incineroar (#4), Garchomp (#7), Rayquaza (#8), Salamence (#9), and Mimikyu (#10). Game stats, prices, and simplified single types are custom balance decisions.
+
+Sprites animate locally; move visuals use type colors. Burn: 6 HP after each of 3 own actions. Poison: 8 HP after each of 3 own actions. Chill: 20% less attack damage for 2 own actions. Drain restores half actual damage; heal restores 30% max HP; focus boosts the next successful attack by 25%; pierce ignores Guard. Switching benches a status until that Pokémon acts again. Reduced-motion users get static battlers and selection sprites. Art assets come from https://github.com/PokeAPI/sprites . Pokémon rights remain with their respective owners.

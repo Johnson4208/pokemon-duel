@@ -1,5 +1,5 @@
-import {makeBattle,act,validTeam} from './engine.mjs';
-const VERSION=1,PREFIX='lingua-pokemon-v1-';
+import {makeBattle,act,validTeam} from './engine.mjs?v=collection-v3';
+const VERSION=2,PREFIX='lingua-pokemon-v2-';
 export class Room {
  constructor({Peer,onChange=()=>{},onError=()=>{},onStatus=()=>{}}){this.Peer=Peer;this.onChange=onChange;this.onError=onError;this.onStatus=onStatus;this.epoch=0;this.reset();}
  reset(){this.host=false;this.connected=false;this.index=0;this.code='';this.conn=null;this.peer=null;this.battle=null;this.lobby={names:['Trainer 1','Trainer 2'],teams:[null,null],ready:[false,false],votes:[false,false]};}
