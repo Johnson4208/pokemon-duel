@@ -4,7 +4,7 @@
   let LANG = window.LINGUA_LANGUAGES.vi;
   let VOCAB = LANG.words;
   const CATEGORIES = Array.isArray(window.VIETNAMESE_CATEGORIES) ? window.VIETNAMESE_CATEGORIES : [];
-  const CATEGORY_LOOKUP = Object.fromEntries(CATEGORIES.map(category => [category.id, category]));
+  const CATEGORY_LOOKUP = Object.fromEntries(CATEGORIES.filter(category=>VOCAB.some(word=>word.category===category.id)).map(category => [category.id, category]));
   const STORAGE_KEY = 'littleLinguaVietnameseV1';
   const PAGE_SIZE = 48;
   const GAME_PICKER_PAGE_SIZE = 18;
@@ -255,6 +255,8 @@
     $('#game-word-search').placeholder=`Search ${LANG.name} or ${LANG.hint}…`;
     $('#view-learn .helper-text').textContent=`Tap ♫ to hear ${LANG.name}; Shift-click for slower audio.`;
     $('#view-play .welcome-copy').textContent='Practice words, collect stars, or battle with your Pokémon team.';
+    $('.game-side-yellow p:last-of-type').textContent='Each vocabulary entry’s first solved puzzle earns one star. Keep exploring new words!';
+    $('.game-side-blue p').textContent=`Say the ${LANG.hint} clue, listen to the ${LANG.name} word, then try building it with the tiles.`;
     $('.hero-copy p').textContent=`Learn useful ${LANG.name} words, hear their pronunciation, and build confidence one little step at a time.`;
     $('.lesson-card.card-peach h3').textContent=`${LANG.name} starter words`;
     $('.lesson-card.card-peach p').textContent=`Build a first set of useful ${LANG.name} words.`;
@@ -268,7 +270,7 @@
     $('#progress-streak').textContent = state.streak;
     $('#game-score').textContent = state.stars;
     $$('#star-track span').forEach((star, index) => {
-      const earned = index < Math.min(5, state.stars);
+      const earned = index < Math.min(5, state.totalEarned || 0);
       star.textContent = earned ? '★' : '☆';
       star.classList.toggle('earned', earned);
     });
@@ -299,7 +301,7 @@
   function initCategories() {
     const select = $('#category-select');
     if (!select || select.dataset.ready === 'true') return;
-    select.innerHTML = '<option value="all">All topics</option>' + CATEGORIES.map(category =>
+    select.innerHTML = '<option value="all">All topics</option>' + CATEGORIES.filter(category=>VOCAB.some(word=>word.category===category.id)).map(category =>
       `<option value="${escapeHTML(category.id)}">${escapeHTML(category.icon)} ${escapeHTML(category.label)}</option>`
     ).join('');
     select.dataset.ready = 'true';
@@ -326,7 +328,7 @@
       return `<article class="vocab-card ${known ? 'known' : ''}" data-vocab-id="${escapeHTML(item.id)}">
         <div class="vocab-card-top"><span class="vocab-category">${escapeHTML(item.categoryLabel)}</span><span class="vocab-card-number">${state.language.toUpperCase()}</span></div>
         <div class="vocab-emoji" aria-hidden="true">${escapeHTML(item.emoji)}</div>
-        <div class="vocab-word"><h3 lang="vi-VN">${escapeHTML(item.vi)}</h3>${item.pinyin?`<span class="pinyin">${escapeHTML(item.pinyin)}</span>`:""}<button class="speaker-button" data-speak="${escapeHTML(item.id)}" aria-label="Hear ${escapeHTML(item.vi)} in Vietnamese" title="Hear Vietnamese pronunciation">♫</button></div>
+        <div class="vocab-word"><h3 lang="${LANG.speech}">${escapeHTML(item.vi)}</h3>${item.pinyin?`<span class="pinyin">${escapeHTML(item.pinyin)}</span>`:""}<button class="speaker-button" data-speak="${escapeHTML(item.id)}" aria-label="Hear ${escapeHTML(item.vi)} in ${LANG.name}" title="Hear ${LANG.name} pronunciation">♫</button></div>
         <p class="vocab-meaning"><span>${LANG.hint}</span>${escapeHTML(item.en)}</p>
         <button class="know-button" data-known="${escapeHTML(item.id)}">${known ? '✓ Learned' : 'Mark as learned'}</button>
       </article>`;
@@ -365,7 +367,7 @@
   function initGamePicker() {
     const select = $('#game-category');
     if (!select || select.dataset.ready === 'true') return;
-    select.innerHTML = '<option value="all">All topics</option>' + CATEGORIES.map(category =>
+    select.innerHTML = '<option value="all">All topics</option>' + CATEGORIES.filter(category=>VOCAB.some(word=>word.category===category.id)).map(category =>
       `<option value="${escapeHTML(category.id)}">${escapeHTML(category.icon)} ${escapeHTML(category.label)}</option>`
     ).join('');
     select.dataset.ready = 'true';
@@ -394,7 +396,7 @@
       const selected = selectedGameWord && item.id === selectedGameWord.id;
       return `<button type="button" class="game-word-card ${selected ? 'selected' : ''}" data-game-word="${escapeHTML(item.id)}" aria-pressed="${selected ? 'true' : 'false'}">
         <span class="game-word-emoji" aria-hidden="true">${escapeHTML(item.emoji)}</span>
-        <span class="game-word-card-copy"><strong lang="vi-VN">${escapeHTML(item.vi)}</strong>${item.pinyin?`<span class="pinyin">${escapeHTML(item.pinyin)}</span>`:""}<small>${escapeHTML(item.en)}</small><em>${escapeHTML(item.categoryLabel)}</em></span>
+        <span class="game-word-card-copy"><strong lang="${LANG.speech}">${escapeHTML(item.vi)}</strong>${item.pinyin?`<span class="pinyin">${escapeHTML(item.pinyin)}</span>`:""}<small>${escapeHTML(item.en)}</small><em>${escapeHTML(item.categoryLabel)}</em></span>
         <span class="game-word-check" aria-hidden="true">${selected ? '✓' : '+'}</span>
       </button>`;
     }).join('');
@@ -413,7 +415,7 @@
     const summary = $('#selected-word-summary');
     const startButton = $('#shuffle-selected');
     if (selectedGameWord) {
-      summary.innerHTML = `${escapeHTML(selectedGameWord.emoji)} You picked <strong lang="vi-VN">${escapeHTML(selectedGameWord.vi)}</strong> — ${escapeHTML(selectedGameWord.en)}!`;
+      summary.innerHTML = `${escapeHTML(selectedGameWord.emoji)} You picked <strong lang="${LANG.speech}">${escapeHTML(selectedGameWord.vi)}</strong> — ${escapeHTML(selectedGameWord.en)}!`;
       startButton.disabled = false;
     } else {
       summary.textContent = '🌱 No word picked yet. Choose a card above!';
@@ -687,7 +689,7 @@
   window.LinguaApp={ show:changeView, refresh(next,userKey) {
     const reset=identity!==userKey || state.language!==next.language;
     identity=userKey;state=next;LANG=window.LINGUA_LANGUAGES[state.language]||window.LINGUA_LANGUAGES.vi;VOCAB=LANG.words;
-    if(reset){activeCategory='all';searchTerm='';showKnownOnly=false;currentPage=1;gameWordPage=1;storyPage=0;selectedGameWord=null;puzzleSolved=false;$('#vocab-search').value='';$('#game-word-search').value='';$('#known-filter').checked=false;$('#category-select').value='all';$('#game-category').value='all';$('#game-layout').hidden=true;$('#word-choice-panel').hidden=false;}
+    if(reset){activeCategory='all';searchTerm='';showKnownOnly=false;currentPage=1;gameWordPage=1;storyPage=0;selectedGameWord=null;puzzleSolved=false;$('#vocab-search').value='';$('#game-word-search').value='';$('#known-filter').checked=false;$('#category-select').dataset.ready='false';$('#game-category').dataset.ready='false';initCategories();initGamePicker();$('#category-select').value='all';$('#game-category').value='all';$('#game-layout').hidden=true;$('#word-choice-panel').hidden=false;}
     updateDashboard();renderVocab();renderGameWordPicker();renderStory();
   }};
   initCategories();initGamePicker();updateDashboard();renderVocab();renderGameWordPicker();renderStory();
