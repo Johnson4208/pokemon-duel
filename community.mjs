@@ -19,7 +19,7 @@ function renderShop(){const p=account.profile;if(!p)return;$('wallet-stars').tex
  $('owned-pokemon').innerHTML=p.owned.map(id=>{const mon=ROSTER.find(m=>m.id===id);return mon?`<span><img src="${id}.png" alt=""/>${mon.name}</span>`:'';}).join('');
 }
 $('shop-grid').onclick=async e=>{const b=e.target.closest('[data-buy]');if(!b||b.disabled||purchasing)return;purchasing=true;renderShop();try{await account.mutate({type:'buy',id:Number(b.dataset.buy)});}catch(error){$('toast').textContent=error.message;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3500);}finally{purchasing=false;renderShop();}};
-$('open-duel').onclick=()=>{$('duel-embed').hidden=false;if(!$('pokemon-frame').getAttribute('src'))$('pokemon-frame').src='duel.html';$('word-choice-panel').hidden=true;$('game-layout').hidden=true;$('duel-embed').scrollIntoView({behavior:'smooth',block:'start'});};
+$('open-duel').onclick=()=>{$('duel-embed').hidden=false;if(!$('pokemon-frame').getAttribute('src'))$('pokemon-frame').src='duel.html?v=return-fix-2';$('word-choice-panel').hidden=true;$('game-layout').hidden=true;$('duel-embed').scrollIntoView({behavior:'smooth',block:'start'});};
 function closeDuel(){$('duel-embed').hidden=true;$('pokemon-frame').removeAttribute('src');$('word-choice-panel').hidden=false;$('game-layout').hidden=true;$('open-duel').focus();}
 $('close-duel').onclick=closeDuel;
 window.addEventListener('message',event=>{if(event.origin===location.origin && event.source===$('pokemon-frame').contentWindow && event.data?.type==='lingua:close-duel')closeDuel();});
