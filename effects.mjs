@@ -75,7 +75,7 @@ export function effectMarkup(last,self,actorId=25){
    if(last.effect==='drain'&&last.hit&&f>=5){const t=(f-5)/2;sprite('heal',tx+(sx-tx)*t,ty+(sy-ty)*t,24,f-4);}
   }
   // Rare species get their own environmental accent rather than more opaque clutter.
-  if(tier>=2&&f>=3&&(support||last.hit)&&(support||/Blitz|Burst|Storm|Meteor|Ascent|Blades|Blizzard|Outrage|Close Combat|Impact|Pump|Origin Pulse|Psystrike|Earth Crush/.test(name))){
+  if(tier>=2&&!support&&f>=3&&(support||last.hit)&&(support||/Blitz|Burst|Storm|Meteor|Ascent|Blades|Blizzard|Outrage|Close Combat|Impact|Pump|Origin Pulse|Psystrike|Earth Crush/.test(name))){
    const x=support?sx:tx,y=support?sy:ty;
    const premium={6:'spiral',9:'waterfall',59:'sun',197:'shadow',700:'holy',94:'warlock',778:'phantom',131:'iceWave',282:'holy',658:'shuriken',448:'combat',143:'dust',727:'darkRing',149:'dragon',373:'meteor',445:'earth',151:'cosmic',150:name==='Psystrike'?'cosmic':'starStorm',384:'meteor',383:'wood',382:'waterfall'}[Number(actorId)]||family[2];
    sprite(premium,x,y+3,72+tier*12,impactFrame,0,.85);
