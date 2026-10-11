@@ -1,3 +1,4 @@
+import {SHOP} from './catalog.mjs';
 // Low-resolution, frame-by-frame pixel effects. Every mark occupies an integer grid cell.
 export function moveVisual(last){
  if(last.type==='guard')return 'guard';
@@ -12,6 +13,8 @@ const palettes={lightning:['#80521e','#ffb520','#fff18c'],thunder:['#5d477b','#f
 export function effectMarkup(last,self,actorId=25){
  if(!['move','struggle','guard','potion'].includes(last.type))return '';
  const visual=moveVisual(last),support=['heal','focus','guard'].includes(visual),sx=self?58:196,sy=self?103:51,tx=support?sx:self?196:58,ty=support?sy:self?51:103,palette=palettes[visual];
+ const price=SHOP.find(p=>p.id===Number(actorId))?.price||0,tier=price>=75?3:price>=30?2:price?1:0;
+ const name=last.moveName||'',seed=[...name].reduce((n,c)=>n+c.charCodeAt(0),Number(actorId)),signature=/Beam|Pump|Pulse|Flamethrower|Psystrike/.test(name)?'beam':/Claw|Slash|Swipes|Blades/.test(name)?'claw':/Storm|Blizzard|Meteor|Ascent/.test(name)?'storm':/Earthquake|Crush|Slam|Impact/.test(name)?'quake':/Sphere|Ball|Shuriken|Pay Day|Swift|Star/.test(name)?'orb':'burst';
  const frames=Array.from({length:8},(_,f)=>{
   const pixels=new Map();
   const dot=(x,y,size=1,color=1)=>{x=Math.round(x);y=Math.round(y);for(let a=0;a<size;a++)for(let b=0;b<size;b++)if(x+a>=0&&x+a<250&&y+b>=0&&y+b<150)pixels.set(`${x+a},${y+b}`,color);};
@@ -51,6 +54,36 @@ export function effectMarkup(last,self,actorId=25){
     else cross(x,y,3+i%3,i%3);
    }
    if(f>4&&last.hit)burst(tx,ty,1);
+  }
+  // Distinct move silhouettes and actor-specific accents, all on the same pixel grid.
+  const progress=Math.min(1,Math.max(0,(f-1)/4)),cx=sx+(tx-sx)*progress,cy=sy+(ty-sy)*progress;
+  if(!support&&!['lightning','thunder','dash'].includes(visual)){
+   if(signature==='beam'&&f>=2&&f<=5){
+    for(let k=-1-tier;k<=1+tier;k++)line(sx,sy+k*2,cx,cy+k*2,2,k===0?2:Math.abs(k)%2);
+    ring(cx,cy,7+tier*3,2);
+   }else if(signature==='claw'&&f>=3&&last.hit){
+    for(let k=0;k<3+tier;k++)bolt([[tx-17+k*7,ty+20-f*2],[tx-2+k*6,ty-2],[tx+8+k*5,ty-22]],1);
+   }else if(signature==='storm'){
+    for(let k=0;k<5+tier*3;k++){const x=tx-36+(k*17+seed)%72,y=-12+((f*17+k*23)%100);bolt([[x+7,y-12],[x,y]],1);cross(x,y,2+(k%3),2);}
+   }else if(signature==='quake'&&f>2){
+    for(let k=-2-tier;k<=2+tier;k++){const x=tx+k*13,y=ty+18;bolt([[tx,ty+8],[x,y],[x+5,y+8],[x-3,y+13]],1);dot(x,y-((f+k+9)%4)*5,4+k%2,1);}
+    ring(tx,ty+15,10+f*5+tier*4,2);
+   }else if(signature==='orb'){
+    for(let k=0;k<2+tier;k++){const angle=f*.8+k*Math.PI*2/(2+tier),x=cx+Math.cos(angle)*(9+tier*3),y=cy+Math.sin(angle)*9;ring(x,y,5+tier,0);ring(x,y,3+tier,1);cross(x,y,3,2);}
+    if(/Shuriken|Swift|Star|Pay Day/.test(name))for(let k=0;k<4;k++){const a=f+k*Math.PI/2;bolt([[cx,cy],[cx+Math.cos(a)*17,cy+Math.sin(a)*17],[cx+Math.cos(a+.5)*7,cy+Math.sin(a+.5)*7]],1);}
+   }
+   if(f>=5&&last.hit)burst(tx,ty,1+tier*.18);
+  }
+  // Shop progression adds charge satellites, impact halos and signature scenery.
+  if(tier){
+   if(f<3)for(let k=0;k<4+tier*2;k++){const a=k*Math.PI*2/(4+tier*2)+f*.5;cross(sx+Math.cos(a)*(20-f*4),sy+Math.sin(a)*(16-f*3),tier>1?2:1,2);}
+   if(f>=4&&(support||last.hit)){const x=support?sx:tx,y=support?sy:ty;for(let k=0;k<tier;k++)ring(x,y,12+(f-3)*5+k*7,k%2?2:0);for(let k=0;k<6+tier*4;k++){const a=k*2.4+seed,r=16+f*2+(k%4)*4;cross(x+Math.cos(a)*r,y+Math.sin(a)*r*.8,1+k%2,2);}}
+   if(tier===3&&f>=2&&f<=6){
+    if(Number(actorId)===383){for(let k=0;k<7;k++){const x=tx-36+k*12,h=(k%3+1)*8+f*2;bolt([[x-4,ty+23],[x,ty+23-h],[x+5,ty+23]],2);}}
+    else if(Number(actorId)===382){for(let k=0;k<3;k++)for(let x=0;x<250;x+=3)dot(x,ty+22+k*5+Math.sin(x/12-f)*5,2,k%3);}
+    else if(Number(actorId)===384){for(let k=0;k<28;k++){const a=k*.25+f*.5,r=15+k*.8;dot(tx+Math.cos(a)*r,ty+Math.sin(a)*r*.65,3,k%3);}}
+    else{ring(tx,ty,30+f*2,2);ring(tx,ty,24+f*2,0);for(let k=0;k<6;k++){const a=k*Math.PI/3+f*.2;cross(tx+Math.cos(a)*36,ty+Math.sin(a)*25,3,2);}}
+   }
   }
   const art=[...pixels].map(([xy,c])=>{const [x,y]=xy.split(',');return `<rect x="${x}" y="${y}" width="1" height="1" fill="${c===3?'#83749c':palette[c]}"/>`;}).join('');
   const ghosts=visual==='dash'&&f<5?[0,1,2].map(i=>{const t=Math.max(0,(f-i)/5);return `<image href="${Number(actorId)}.png" x="${sx+(tx-sx)*t-22}" y="${sy+(ty-sy)*t-25}" width="44" height="44" opacity="${.5-i*.13}"/>`;}).join(''):'';
