@@ -1,5 +1,5 @@
-import {ROSTER,TYPES} from './catalog.mjs?v=collection-v3';
-export {ROSTER,TYPES,EFFECTS} from './catalog.mjs?v=collection-v3';
+import {ROSTER,TYPES} from './catalog.mjs?v=prices-v4';
+export {ROSTER,TYPES,EFFECTS} from './catalog.mjs?v=prices-v4';
 const dex=new Map(ROSTER.map(p=>[p.id,p]));
 const strong={electric:['water','flying'],fire:['grass','ice'],water:['fire','ground'],grass:['water','ground'],ghost:['ghost','psychic'],dragon:['dragon'],fighting:['normal','ice','dark'],psychic:['fighting'],ground:['electric','fire'],ice:['dragon','ground','grass','flying'],fairy:['dragon','fighting','dark'],dark:['psychic','ghost'],flying:['grass','fighting']};
 const weak={electric:['grass','dragon','electric'],fire:['water','dragon','fire'],water:['grass','dragon','water'],grass:['fire','dragon','grass'],ghost:['dark'],dragon:[],normal:[],fighting:['psychic','fairy','flying'],psychic:['psychic'],ground:['grass'],ice:['fire','water','ice'],fairy:['fire'],dark:['dark','fighting','fairy'],flying:['electric']};

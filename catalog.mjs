@@ -2,17 +2,17 @@
 export const STARTERS=[25,133,3]; // Stored legacy defaults stay compatible with existing accounts.
 export const FREE_POKEMON=[25,133,1,4,7,39,54,52,37,722,447,3];
 export const SHOP=[
- {id:6,price:8,tag:'Fire superstar',rank:3},{id:9,price:8,tag:'Water guardian'},
- {id:59,price:10,tag:'Flame companion'},{id:197,price:12,tag:'Moonlight friend'},
- {id:700,price:12,tag:'Ribbon magic'},{id:94,price:15,tag:'Ghost trickster'},
- {id:778,price:15,tag:'Little disguise',rank:10},{id:131,price:18,tag:'Ice explorer'},
- {id:282,price:20,tag:'Psychic wonder'},{id:658,price:22,tag:'Water ninja'},
- {id:448,price:25,tag:'Aura champion'},{id:143,price:28,tag:'Gentle giant'},
- {id:727,price:30,tag:'Fire champion',rank:4},{id:149,price:35,tag:'Dragon friend'},
- {id:373,price:40,tag:'Sky dragon',rank:9},{id:445,price:45,tag:'Dragon champion',rank:7},
- {id:151,price:45,tag:'Mythical wonder'},{id:150,price:50,tag:'Psychic legend'},
- {id:384,price:60,tag:'Sky legend',rank:8},{id:383,price:65,tag:'Land legend',rank:2},
- {id:382,price:65,tag:'Ocean legend',rank:1}
+ {id:6,price:12,tag:'Fire superstar',rank:3},{id:9,price:12,tag:'Water guardian'},
+ {id:59,price:15,tag:'Flame companion'},{id:197,price:18,tag:'Moonlight friend'},
+ {id:700,price:18,tag:'Ribbon magic'},{id:94,price:23,tag:'Ghost trickster'},
+ {id:778,price:23,tag:'Little disguise',rank:10},{id:131,price:27,tag:'Ice explorer'},
+ {id:282,price:30,tag:'Psychic wonder'},{id:658,price:33,tag:'Water ninja'},
+ {id:448,price:38,tag:'Aura champion'},{id:143,price:42,tag:'Gentle giant'},
+ {id:727,price:45,tag:'Fire champion',rank:4},{id:149,price:53,tag:'Dragon friend'},
+ {id:373,price:60,tag:'Sky dragon',rank:9},{id:445,price:68,tag:'Dragon champion',rank:7},
+ {id:151,price:68,tag:'Mythical wonder'},{id:150,price:75,tag:'Psychic legend'},
+ {id:384,price:90,tag:'Sky legend',rank:8},{id:383,price:98,tag:'Land legend',rank:2},
+ {id:382,price:98,tag:'Ocean legend',rank:1}
 ];
 export const collection=p=>[...new Set([...FREE_POKEMON,...(p?.owned||STARTERS)])];
 export const TYPES={electric:['Điện','#edb72e','⚡'],fire:['Lửa','#ee7752','🔥'],water:['Nước','#599fe1','💧'],grass:['Cỏ','#6dad69','🌿'],ghost:['Ma','#967bc5','👻'],dragon:['Rồng','#7a82d1','🐉'],normal:['Thường','#a79c8c','✦'],fighting:['Giác đấu','#c16d66','🥊'],psychic:['Siêu linh','#d278a3','🔮'],ground:['Đất','#b99b6b','⛰'],ice:['Băng','#78bfc3','❄'],fairy:['Tiên','#e18fbe','✿'],dark:['Bóng tối','#74738d','☾'],flying:['Bay','#86a9d9','🪽']};

@@ -1,7 +1,7 @@
-import {collection,FREE_POKEMON} from './catalog.mjs?v=collection-v3';
-import {account} from './account.mjs?v=collection-v3';
-import {AVATARS,SHOP,learningState} from './profile-model.mjs?v=collection-v3';
-import {ROSTER} from './engine.mjs?v=collection-v3';
+import {collection,FREE_POKEMON} from './catalog.mjs?v=prices-v4';
+import {account} from './account.mjs?v=prices-v4';
+import {AVATARS,SHOP,learningState} from './profile-model.mjs?v=prices-v4';
+import {ROSTER} from './engine.mjs?v=prices-v4';
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let registerMode=false,signupAvatar='fox',profileAvatar='fox',lastIdentity=null,appLoaded=false,purchasing=false;
 const animalName=id=>id[0].toUpperCase()+id.slice(1);
@@ -25,7 +25,7 @@ $('shop-grid').onclick=e=>{const b=e.target.closest('[data-buy]');if(!b||b.disab
 $('exchange-cancel').onclick=()=>{if(!purchasing)$('exchange-dialog').close();};
 $('exchange-dialog').addEventListener('cancel',e=>{if(purchasing)e.preventDefault();});
 $('exchange-confirm').onclick=async()=>{if(!exchange||purchasing)return;purchasing=true;$('exchange-confirm').disabled=true;$('exchange-cancel').disabled=true;$('exchange-feedback').textContent='Saving your Pokémon and new balance…';renderShop();try{await account.mutate({type:'buy',id:exchange.id,expectedStars:exchange.stars});$('exchange-dialog').close();$('toast').textContent='Pokémon saved! Your star balance is now 0. Keep learning to earn more.';$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),4500);}catch(error){$('exchange-feedback').textContent=error.code==='permission-denied'?'This exchange was not saved. The app owner must publish the updated Firestore rules.':error.message;}finally{purchasing=false;$('exchange-confirm').disabled=false;$('exchange-cancel').disabled=false;renderShop();}};
-$('open-duel').onclick=()=>{$('duel-embed').hidden=false;if(!$('pokemon-frame').getAttribute('src'))$('pokemon-frame').src='duel.html?v=collection-v3';$('word-choice-panel').hidden=true;$('game-layout').hidden=true;$('duel-embed').scrollIntoView({behavior:'smooth',block:'start'});};
+$('open-duel').onclick=()=>{$('duel-embed').hidden=false;if(!$('pokemon-frame').getAttribute('src'))$('pokemon-frame').src='duel.html?v=prices-v4';$('word-choice-panel').hidden=true;$('game-layout').hidden=true;$('duel-embed').scrollIntoView({behavior:'smooth',block:'start'});};
 function closeDuel(){$('duel-embed').hidden=true;$('pokemon-frame').removeAttribute('src');$('word-choice-panel').hidden=false;$('game-layout').hidden=true;$('open-duel').focus();}
 $('close-duel').onclick=closeDuel;
 window.addEventListener('message',event=>{if(event.origin===location.origin && event.source===$('pokemon-frame').contentWindow && event.data?.type==='lingua:close-duel')closeDuel();});

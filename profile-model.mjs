@@ -1,6 +1,6 @@
 export const AVATARS = ['fox','cat','dog','panda','koala','rabbit','bear','frog','owl','penguin','duck','lion','tiger','monkey','pig','mouse','raccoon','elephant','deer','sloth'];
-import {STARTERS,SHOP} from './catalog.mjs?v=collection-v3';
-export {STARTERS,SHOP} from './catalog.mjs?v=collection-v3';
+import {STARTERS,SHOP} from './catalog.mjs?v=prices-v4';
+export {STARTERS,SHOP} from './catalog.mjs?v=prices-v4';
 export function freshProfile(name='Sunny',avatar='fox'){return {nickname:name.slice(0,20)||'Sunny',avatar:AVATARS.includes(avatar)?avatar:'fox',language:'vi',uiLanguage:'en',known:[],completed:[],stars:0,totalEarned:0,totalSpent:0,owned:[...STARTERS],minutes:0,goal:10,practiceDays:[],streak:1};}
 export function reduceProfile(profile,action){
  const p=structuredClone(profile);

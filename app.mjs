@@ -1,7 +1,7 @@
-import {collection,FREE_POKEMON} from './catalog.mjs?v=collection-v3';
-import {ROSTER,TYPES,EFFECTS,effectiveness,makeBattle,act,chooseAI} from './engine.mjs?v=collection-v3';
-import {Room} from './network.mjs?v=collection-v3';
-import {account as directAccount} from './account.mjs?v=collection-v3';
+import {collection,FREE_POKEMON} from './catalog.mjs?v=prices-v4';
+import {ROSTER,TYPES,EFFECTS,effectiveness,makeBattle,act,chooseAI} from './engine.mjs?v=prices-v4';
+import {Room} from './network.mjs?v=prices-v4';
+import {account as directAccount} from './account.mjs?v=prices-v4';
 const learner=window.parent!==window && window.parent?.LinguaAccount ? window.parent.LinguaAccount : directAccount;
 let learnerId=learner.user?.uid||'guest';
 const owned=()=>collection(learner.profile);
