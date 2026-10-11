@@ -265,3 +265,66 @@ h1,h2,h3,.brand-name{font-family:'Fredoka','Nunito',system-ui,sans-serif;letter-
 button,input,select,textarea{font:inherit;line-height:1.35}
 button{min-height:40px}img{max-width:100%}
 [hidden]{display:none!important}
+
+/* Touch-first navigation and safe-area layout for phones and small tablets. */
+.mobile-bottom-nav { display: none; }
+.mobile-more-dialog { display: none; }
+.mobile-more-dialog[open] { display: block; }
+.mobile-more-dialog::backdrop { background: rgba(39, 50, 75, .22); }
+.mobile-more-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; color: var(--ink); }
+.mobile-more-heading strong { font-size: 14px; }
+.mobile-more-heading button { display: grid; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 12px; background: #f5f3fb; color: #777e94; font-size: 23px; }
+.mobile-more-dialog nav { display: grid; gap: 5px; }
+.mobile-more-dialog .nav-link { min-height: 48px; }
+.mobile-grownup-link { display: flex; align-items: center; gap: 13px; width: 100%; min-height: 48px; padding: 0 13px; border: 0; border-radius: 13px; background: #fff8e6; color: #8e7741; font-size: 12px; font-weight: 900; text-align: left; }
+@media (max-width: 920px) {
+  .mobile-bottom-nav { position: fixed; z-index: 20; inset: auto 0 0; display: flex; align-items: stretch; justify-content: space-around; gap: 3px; min-height: calc(66px + env(safe-area-inset-bottom)); padding: 5px 8px calc(5px + env(safe-area-inset-bottom)); border-top: 1px solid #eeeaf5; background: rgba(255, 255, 255, .97); box-shadow: 0 -8px 26px rgba(64, 65, 105, .08); backdrop-filter: blur(14px); }
+  .mobile-nav-link.nav-link { display: flex; flex: 1; min-width: 0; width: auto; min-height: 52px; flex-direction: column; justify-content: center; gap: 2px; padding: 4px 2px; border-radius: 13px; text-align: center; color: #8b91a3; }
+  .mobile-nav-link.nav-link > span { font-size: 20px; line-height: 1.1; }
+  .mobile-nav-link small { font-size: 9px; font-weight: 900; line-height: 1.15; }
+  .mobile-nav-link.nav-link.active, .mobile-nav-link.active { color: var(--purple); background: #f1eeff; }
+  .mobile-more-dialog { position: fixed; inset: auto 12px calc(76px + env(safe-area-inset-bottom)) 12px; width: auto; max-width: none; margin: 0; padding: 15px; border: 1px solid #eeeaf5; border-radius: 20px; background: #fff; color: var(--ink); box-shadow: 0 18px 54px rgba(39, 50, 75, .2); }
+  .main-content { padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
+  #pokemon-frame { height: min(78dvh, 920px); min-height: 620px; }
+}
+@media (max-width: 680px) {
+  body { overflow-x: hidden; }
+  .main-content { padding-inline: 14px; }
+  .topbar { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; grid-template-areas: "brand brand brand profile" "wallet language language sound"; align-items: center; column-gap: 8px; row-gap: 8px; min-height: auto; padding: 12px 0 10px; }
+  .mobile-brand { grid-area: brand; min-width: 0; }
+  .topbar-actions { display: contents; }
+  .profile-button { grid-area: profile; justify-self: end; }
+  .wallet-chip { grid-area: wallet; justify-self: start; min-height: 38px; padding: 7px 10px; font-size: 12px; }
+  .language-picker { grid-area: language; justify-self: end; min-height: 38px; }
+  #sound-toggle { grid-area: sound; justify-self: end; width: 38px; height: 38px; }
+  .language-picker select { max-width: 105px; min-height: 34px; font-size: 11px; }
+  .view-heading { align-items: flex-start; flex-direction: column; gap: 9px; }
+  .view-heading > div:first-child { width: 100%; }
+  .mini-stat { align-self: flex-start; }
+  .lesson-card { grid-template-columns: 44px minmax(0, 1fr) 44px; }
+  .lesson-card-top { grid-column: 1; grid-row: 1 / 3; align-self: center; }
+  .lesson-card h3 { grid-column: 2; grid-row: 1; margin: 0; font-size: 14px; line-height: 1.25; }
+  .lesson-card p { grid-column: 2; grid-row: 2; margin: 4px 0 0; font-size: 11px; line-height: 1.4; }
+  .lesson-card-bottom { grid-column: 3; grid-row: 1 / 3; align-self: center; justify-self: end; margin: 0; padding: 0; }
+  .lesson-art { display: none; }
+  .vocab-controls { grid-template-columns: minmax(0, 1fr); }
+  .known-filter { grid-column: auto; }
+  .vocab-search, .category-select-wrap, .game-word-search { min-height: 48px; }
+  .speaker-button, .circle-go, .button { min-height: 44px; }
+  .speaker-button, .circle-go { min-width: 44px; }
+  .story-controls { align-items: stretch; }
+  .game-side { grid-template-columns: 1fr; }
+  .story-controls .button { min-height: 44px; }
+  .exchange-dialog { max-height: 88dvh; overflow-y: auto; padding: 22px 18px; }
+  .exchange-actions { flex-direction: column-reverse; }
+  .exchange-actions .button { width: 100%; min-height: 48px; }
+}
+@media (max-width: 390px) {
+  .topbar { column-gap: 5px; }
+  .mobile-brand .brand-name { font-size: 17px; }
+  .wallet-chip { font-size: 11px; }
+  .language-picker { padding-inline: 6px; }
+  .language-picker select { max-width: 87px; }
+  .mobile-bottom-nav { padding-inline: 5px; }
+  .mobile-nav-link small { font-size: 8px; }
+}

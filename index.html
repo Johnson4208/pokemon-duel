@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" /><link rel="stylesheet" href="community.css?v=roles-v1" />
+  <link rel="stylesheet" href="styles.css?v=mobile-audio-v1" /><link rel="stylesheet" href="community.css?v=roles-v1" />
 </head>
 <body>
   <section class="login-page" id="login-page" aria-labelledby="login-title"><div class="login-story"><a class="brand" href="./"><span class="brand-mark">✦</span><span class="brand-name">little<span>lingua</span></span></a><p class="eyebrow">LITTLE LESSONS. BIG ADVENTURES.</p><h1>New words.<br>New friends.<br><span>A world of wonder.</span></h1><p>Learn Vietnamese, English, or Chinese. Earn stars, collect Pokémon, and play together.</p><div class="login-friends"><img src="fox.svg" alt="Funny fox explorer"/><img src="panda.svg" alt="Funny panda explorer"/><img src="frog.svg" alt="Funny frog explorer"/></div><span class="login-pill">🇻🇳 Tiếng Việt &nbsp; 🇬🇧 English &nbsp; 🇨🇳 中文</span></div><div class="login-card panel-card"><p class="eyebrow small-eyebrow">YOUR ADVENTURE STARTS HERE</p><h2 id="login-title">Welcome, little explorer!</h2><p>Every learner gets their very own stars and friends.</p><div class="auth-tabs" role="group" aria-label="Account action"><button id="login-tab" class="selected" type="button" aria-pressed="true">Sign in</button><button id="register-tab" type="button" aria-pressed="false">Create account</button></div><form id="auth-form"><div id="signup-fields" hidden><label for="signup-name">Explorer name</label><input id="signup-name" maxlength="20" autocomplete="nickname" value="Sunny"/><p class="field-label">Pick your first animal friend</p><div class="avatar-picker compact" id="signup-avatars"></div></div><label for="auth-email">Email address</label><input id="auth-email" type="email" required autocomplete="username" placeholder="you@example.com"/><label for="auth-password">Password</label><input id="auth-password" type="password" required minlength="8" autocomplete="current-password" placeholder="At least 8 characters"/><button id="auth-submit" class="button button-primary button-full" type="submit">Sign in →</button><button id="reset-password" class="text-button" type="button">Forgot your password?</button><p id="auth-message" role="status" aria-live="polite">Connecting your learning space…</p></form><div class="login-divider"><span>or take a little look around</span></div><button id="guest-button" class="button button-soft button-full">Try the guest demo ✨</button><p class="login-note">Your account stays saved. We’ll ask you to sign in again when you open a new browser session.</p></div></section>
@@ -207,6 +207,23 @@
       <section class="view" id="view-profile" aria-labelledby="profile-title"><div class="view-heading"><div><p class="eyebrow">A LITTLE SPACE THAT’S ALL YOURS</p><h1 id="profile-title">Hello, explorer! <span>🐾</span></h1><p class="welcome-copy" id="account-status"></p></div><button id="logout-button" class="button button-soft">Sign out</button></div><form id="profile-form" class="panel-card profile-panel"><label for="profile-name">Your explorer name</label><input id="profile-name" required maxlength="20" autocomplete="nickname"/><h2>Choose your animal friend</h2><p>Twenty funny little explorers, one just like you.</p><div class="avatar-picker" id="profile-avatars"></div><label for="interface-language">App language</label><select id="interface-language"><option value="en">English</option><option value="vi">Tiếng Việt</option><option value="zh">中文</option></select><button class="button button-primary" type="submit">Save my profile ✨</button><p id="profile-feedback" role="status"></p></form></section>
       <footer class="app-footer"><span>✦ Made for growing minds</span><span>Little lessons. Big possibilities. <b>♥</b></span></footer>
     </main>
+<dialog class="mobile-more-dialog" id="mobile-more-dialog" aria-label="More sections">
+      <div class="mobile-more-heading"><strong>More to explore</strong><button type="button" id="mobile-more-close" aria-label="Close menu">×</button></div>
+      <nav aria-label="More sections">
+        <button class="nav-link" data-view="stories"><span class="nav-icon">▤</span><span>Story garden</span></button>
+        <button class="nav-link" data-view="progress"><span class="nav-icon">↗</span><span>My progress</span></button>
+        <button class="nav-link" data-view="profile"><span class="nav-icon">🐾</span><span>My profile</span></button>
+        <button class="mobile-grownup-link" type="button" id="mobile-grownup-button"><span class="nav-icon">⚙</span><span>Grown-up corner</span></button>
+      </nav>
+    </dialog>
+    <nav class="mobile-bottom-nav" aria-label="Main navigation">
+      <button class="mobile-nav-link nav-link active" data-view="today" data-mobile-label="Home"><span aria-hidden="true">⌂</span><small>Home</small></button>
+      <button class="mobile-nav-link nav-link" data-view="learn" data-mobile-label="Learn"><span aria-hidden="true">✧</span><small>Learn</small></button>
+      <button class="mobile-nav-link nav-link" data-view="play" data-mobile-label="Play"><span aria-hidden="true">♟</span><small>Play</small></button>
+      <button class="mobile-nav-link nav-link" data-view="shop" data-mobile-label="Shop"><span aria-hidden="true">🛍</span><small>Shop</small></button>
+      <button class="mobile-nav-link" id="mobile-more" type="button" aria-haspopup="dialog" aria-controls="mobile-more-dialog"><span aria-hidden="true">•••</span><small>More</small></button>
+    </nav>
+
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

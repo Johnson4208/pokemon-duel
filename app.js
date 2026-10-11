@@ -69,58 +69,63 @@
 
   let speechRequestId = 0;
 
-  function findVietnameseVoice(voices) {
-    const vietnameseVoices = voices.filter(voice =>
-      /^vi(?:[-_]|$)/i.test(voice.lang || '') || /vietnamese|tiếng việt/i.test(voice.name || '')
-    );
-    vietnameseVoices.sort((a, b) => {
-      const score = voice => {
-        const lang = String(voice.lang || '').replace('_', '-').toLowerCase();
-        if (lang === 'vi-vn') return 0;
-        if (lang.startsWith('vi-vn-')) return 1;
-        if (lang.startsWith('vi')) return 2;
-        return 3;
-      };
-      return score(a) - score(b);
-    });
-    return vietnameseVoices[0] || null;
+  let speechVoices = [];
+  function refreshSpeechVoices() {
+    try { speechVoices = window.speechSynthesis?.getVoices?.() || []; } catch { speechVoices = []; }
+    return speechVoices;
+  }
+  // Mobile browsers often populate their system voices after the page first loads.
+  // Warm the list now, then refresh it when iOS/Android reports voiceschanged.
+  refreshSpeechVoices();
+  if (window.speechSynthesis?.addEventListener) {
+    window.speechSynthesis.addEventListener('voiceschanged', refreshSpeechVoices);
+  } else if (window.speechSynthesis) {
+    const oldVoicesChanged = window.speechSynthesis.onvoiceschanged;
+    window.speechSynthesis.onvoiceschanged = event => {
+      if (typeof oldVoicesChanged === 'function') oldVoicesChanged.call(window.speechSynthesis, event);
+      refreshSpeechVoices();
+    };
   }
 
-  function waitForVietnameseVoice(timeoutMs = 1200) {
-    const synth = window.speechSynthesis;
-    const existingVoice = findVietnameseVoice(synth.getVoices());
-    if (existingVoice) return Promise.resolve(existingVoice);
+  function findVoice(voices, locale) {
+    const target = String(locale || '').replaceAll('_', '-').toLowerCase();
+    const language = target.split('-')[0];
+    return voices.filter(voice => String(voice.lang || '').trim()).sort((a, b) => {
+      const rank = voice => {
+        const tag = String(voice.lang).replaceAll('_', '-').toLowerCase();
+        if (tag === target) return 0;
+        if (tag.startsWith(`${target}-`)) return 1;
+        if (tag.startsWith(`${language}-`)) return 2;
+        if (tag === language) return 3;
+        return 4;
+      };
+      return rank(a) - rank(b) || Number(b.localService) - Number(a.localService);
+    }).find(voice => {
+      const tag = String(voice.lang).replaceAll('_', '-').toLowerCase();
+      return tag === language || tag.startsWith(`${language}-`);
+    }) || null;
+  }
 
+  function waitForVoice(locale, timeoutMs = 1400) {
+    const synth = window.speechSynthesis;
+    const existing = findVoice(refreshSpeechVoices(), locale);
+    if (existing || !synth?.addEventListener) return Promise.resolve(existing);
     return new Promise(resolve => {
-      let settled = false;
-      let previousHandler = null;
-      let fallbackHandler = null;
-      const deadline = Date.now() + timeoutMs;
-      const onVoicesChanged = () => finish();
+      let done = false;
       const finish = () => {
-        if (settled) return;
-        const voice = findVietnameseVoice(synth.getVoices());
+        if (done) return;
+        const voice = findVoice(refreshSpeechVoices(), locale);
         if (!voice && Date.now() < deadline) return;
-        settled = true;
-        window.clearTimeout(timeoutId);
-        if (typeof synth.removeEventListener === 'function') {
-          synth.removeEventListener('voiceschanged', onVoicesChanged);
-        } else if (synth.onvoiceschanged === fallbackHandler) {
-          synth.onvoiceschanged = previousHandler;
-        }
+        done = true;
+        clearTimeout(timer);
+        synth.removeEventListener('voiceschanged', changed);
         resolve(voice);
       };
-      const timeoutId = window.setTimeout(finish, timeoutMs);
-      if (typeof synth.addEventListener === 'function') {
-        synth.addEventListener('voiceschanged', onVoicesChanged);
-      } else {
-        previousHandler = synth.onvoiceschanged;
-        fallbackHandler = event => {
-          if (typeof previousHandler === 'function') previousHandler.call(synth, event);
-          onVoicesChanged();
-        };
-        synth.onvoiceschanged = fallbackHandler;
-      }
+      const changed = () => finish();
+      const deadline = Date.now() + timeoutMs;
+      const timer = setTimeout(finish, timeoutMs);
+      synth.addEventListener('voiceschanged', changed);
+      refreshSpeechVoices();
     });
   }
 
@@ -161,13 +166,28 @@
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
 
     const speechText = String(text || '').trim();
-    if (state.language !== 'vi') {
-      if (!('speechSynthesis' in window)) return toast('Pronunciation is not supported on this browser.');
-      const utterance = new SpeechSynthesisUtterance(speechText); utterance.lang=LANG.speech;
-      const voice=window.speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith(state.language==='zh'?'zh':'en'));
-      if(voice)utterance.voice=voice;utterance.rate=slow?.65:.85; window.speechSynthesis.speak(utterance); return;
-    }
     if (!speechText) return;
+    if (state.language !== 'vi') {
+      if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') return toast(`${LANG.name} pronunciation is not supported on this browser.`);
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(speechText);
+      utterance.lang = LANG.speech; // Keep the requested language even before mobile voices finish loading.
+      speechVoices = refreshSpeechVoices();
+      const voice = findVoice(speechVoices, LANG.speech);
+      if (voice) utterance.voice = voice;
+      utterance.rate = slow ? 0.72 : 0.9;
+      utterance.pitch = 1;
+      utterance.onerror = event => {
+        if (event.error !== 'canceled' && event.error !== 'interrupted') {
+          toast(`${LANG.name} audio could not play. Check that this device has ${LANG.name} speech enabled.`);
+        }
+      };
+      // Speak directly in the tap handler: mobile Safari and Chrome may reject
+      // speech started only after an asynchronous voice-loading wait.
+      try { synth.resume(); synth.speak(utterance); }
+      catch { toast(`${LANG.name} audio could not play. Please tap the speaker again.`); }
+      return;
+    }
 
     const matchingWord = VOCAB.find(item => item.vi === speechText);
     if (matchingWord) {
@@ -198,7 +218,7 @@
       return;
     }
     const synth = window.speechSynthesis;
-    const vietnameseVoice = await waitForVietnameseVoice();
+    const vietnameseVoice = await waitForVoice('vi-VN');
     if (requestId !== speechRequestId) return;
     if (!vietnameseVoice) {
       toast(matchingWord
