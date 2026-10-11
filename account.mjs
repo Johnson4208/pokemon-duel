@@ -1,4 +1,4 @@
-import {freshProfile,reduceProfile,AVATARS} from './profile-model.mjs?v=prices-v4';
+import {freshProfile,reduceProfile,AVATARS} from './profile-model.mjs?v=roles-v1';
 export class Account extends EventTarget {
  constructor(){super();this.profile=null;this.user=null;this.ready=false;this.guest=false;this.epoch=0;this.queue=Promise.resolve();}
  emit(){this.dispatchEvent(new Event('change'));}
@@ -7,7 +7,7 @@ export class Account extends EventTarget {
   try{
    const base='https://www.gstatic.com/firebasejs/10.12.5/';
    const [app,auth,db]=await Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js'),import(base+'firebase-firestore.js')]);
-   this.authApi=auth;this.dbApi=db;const firebase=app.initializeApp(window.LINGUA_FIREBASE);this.auth=auth.getAuth(firebase);this.db=db.getFirestore(firebase);
+   this.authApi=auth;this.dbApi=db;const firebase=app.initializeApp(window.LINGUA_FIREBASE);this.auth=auth.initializeAuth(firebase,{persistence:auth.browserSessionPersistence});this.db=db.getFirestore(firebase);
    auth.onAuthStateChanged(this.auth,async user=>{
     const epoch=++this.epoch;this.unsubscribe?.();this.user=user;this.guest=false;this.profile=null;this.emit();
     if(!user){this.ready=true;this.emit();return;}

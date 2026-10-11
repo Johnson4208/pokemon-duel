@@ -16,7 +16,7 @@ const el=id=>elements.get(id);
 const ai=()=>{for(const [id,t]of timers)if(t.ms===950){timers.delete(id);t.cb();return true;}return false;};
 await import('./app.mjs');
 test('app initialization, selection, practice through result, rematch and exit',()=>{
- assert.equal((el('roster').innerHTML.match(/class="pokemon-card/g)||[]).length,33);
+ assert.equal((el('roster').innerHTML.match(/class="pokemon-card/g)||[]).length,48);
  assert.equal(el('selection-count').textContent,'3 / 3');
  learner.profile.nickname='<script>unsafe</script>';
  el('practice').click();assert.equal(el('battle').hidden,false);assert.equal(el('lobby').hidden,true);
