@@ -1,4 +1,4 @@
-import {effectMarkup,moveVisual} from './effects.mjs?v=pixel-v7';
+import {effectMarkup,moveVisual} from './effects.mjs?v=pack-v8';
 import {collection,FREE_POKEMON} from './catalog.mjs?v=motion-v5';
 import {ROSTER,TYPES,EFFECTS,effectiveness,makeBattle,act,chooseAI} from './engine.mjs?v=motion-v5';
 import {Room} from './network.mjs?v=motion-v5';
