@@ -43,7 +43,7 @@ export function effectMarkup(last,self,actorId=25){
   const sprite=(key,x,y,size,frame=f,angle=0,opacity=1)=>{
    const row=ROWS[key];if(row===undefined)throw new Error('Unknown effect '+key);
    const ff=Math.max(0,Math.min(7,Math.round(frame))),xx=Math.round(x-size/2),yy=Math.round(y-size/2);
-   pieces.push(`<g opacity="${opacity}"${angle?` transform="rotate(${Math.round(angle)} ${Math.round(x)} ${Math.round(y)})"`:''}><svg x="${xx}" y="${yy}" width="${size}" height="${size}" viewBox="${ff*128} ${row*128} 128 128" overflow="hidden"><image href="battle-vfx-atlas.png?v=pack-v8" width="${ATLAS_WIDTH}" height="${ATLAS_HEIGHT}"/></svg></g>`);
+   pieces.push(`<g opacity="${opacity}"${angle?` transform="rotate(${Math.round(angle)} ${Math.round(x)} ${Math.round(y)})"`:''}><svg x="${xx}" y="${yy}" width="${size}" height="${size}" viewBox="${ff*128} ${row*128} 128 128" overflow="hidden"><image href="battle-vfx-atlas.png?v=pack-v9" width="${ATLAS_WIDTH}" height="${ATLAS_HEIGHT}"/></svg></g>`);
   };
   const impactFrame=Math.min(7,Math.max(0,(f-3)*2+1)),travel=Math.min(1,Math.max(0,(f-1)/3)),cx=sx+(tx-sx)*travel,cy=sy+(ty-sy)*travel,angle=Math.atan2(ty-sy,tx-sx)*180/Math.PI;
   if(support){
@@ -75,9 +75,9 @@ export function effectMarkup(last,self,actorId=25){
    if(last.effect==='drain'&&last.hit&&f>=5){const t=(f-5)/2;sprite('heal',tx+(sx-tx)*t,ty+(sy-ty)*t,24,f-4);}
   }
   // Rare species get their own environmental accent rather than more opaque clutter.
-  if(tier>=2&&f>=3&&(support||last.hit)){
+  if(tier>=2&&f>=3&&(support||last.hit)&&(support||/Blitz|Burst|Storm|Meteor|Ascent|Blades|Blizzard|Outrage|Close Combat|Impact|Pump|Origin Pulse|Psystrike|Earth Crush/.test(name))){
    const x=support?sx:tx,y=support?sy:ty;
-   const premium={6:'spiral',9:'waterfall',59:'sun',197:'shadow',700:'holy',94:'warlock',778:'phantom',131:'iceWave',282:'holy',658:'shuriken',448:'combat',143:'dust',727:'darkRing',149:'dragon',373:'meteor',445:'earth',151:'cosmic',150:'starStorm',384:'meteor',383:'wood',382:'waterfall'}[Number(actorId)]||family[2];
+   const premium={6:'spiral',9:'waterfall',59:'sun',197:'shadow',700:'holy',94:'warlock',778:'phantom',131:'iceWave',282:'holy',658:'shuriken',448:'combat',143:'dust',727:'darkRing',149:'dragon',373:'meteor',445:'earth',151:'cosmic',150:name==='Psystrike'?'cosmic':'starStorm',384:'meteor',383:'wood',382:'waterfall'}[Number(actorId)]||family[2];
    sprite(premium,x,y+3,72+tier*12,impactFrame,0,.85);
    if(tier===3&&!support){
     if(Number(actorId)===383){for(let k=0;k<3;k++)sprite('earth',tx-27+k*27,ty+18,37,impactFrame+k);}
