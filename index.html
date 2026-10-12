@@ -243,6 +243,7 @@ const previewDialog=document.getElementById('effects-preview-dialog'),previewFra
 for(const button of document.querySelectorAll('[data-effects-preview]'))button.addEventListener('click',()=>{previewFrame.src='pixel-effects-preview.html?embedded=1';previewDialog.showModal();});
 document.getElementById('close-effects-preview').addEventListener('click',()=>previewDialog.close());
 previewDialog.addEventListener('close',()=>previewFrame.removeAttribute('src'));
+window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==previewFrame.contentWindow||event.data?.type!=='lingua:show-play')return;previewDialog.close();window.LinguaApp?.show('play');});
 </script>
 </body>
 </html>

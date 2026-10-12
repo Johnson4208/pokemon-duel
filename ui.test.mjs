@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const html=await readFile(new URL('./duel.html',import.meta.url),'utf8');
 const timers=new Map();let timerId=0;
-class Element{constructor(id){this.id=id;this.hidden=false;this.disabled=false;this.value='';this.textContent='';this.innerHTML='';this.open=false;this.listeners={};this.attrs={};this.parentElement={scrollTop:0,scrollHeight:200};this.classList={toggle(){},remove(){},add(){}};}addEventListener(event,fn){this.listeners[event]=fn;}setAttribute(k,v){this.attrs[k]=v;}getAttribute(k){return this.attrs[k]??null;}showModal(){this.open=true;}close(){this.open=false;}click(){if(!this.disabled)this.onclick?.();}}
+class Element{constructor(id){this.id=id;this.hidden=false;this.disabled=false;this.value='';this.textContent='';this.innerHTML='';this.open=false;this.listeners={};this.attrs={};this.dataset={};this.parentElement={scrollTop:0,scrollHeight:200};this.classList={toggle(){},remove(){},add(){}};}addEventListener(event,fn){this.listeners[event]=fn;}setAttribute(k,v){this.attrs[k]=v;}getAttribute(k){return this.attrs[k]??null;}showModal(){this.open=true;}close(){this.open=false;}click(){if(!this.disabled)this.onclick?.();}}
 const elements=new Map([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>[m[1],new Element(m[1])]));
 globalThis.document={getElementById:id=>{assert.ok(elements.has(id),`Missing static HTML ID: ${id}`);return elements.get(id);}};
 const learner={user:null,profile:{nickname:'Explorer',owned:[25,133,3,6,9,94,131,282,448,143,149,445]},addEventListener(){}};
@@ -38,4 +38,17 @@ test('return to Lingua closes the embedded battle without navigating inside the 
  el('practice').click();let prevented=false;el('return-lingua').onclick({preventDefault(){prevented=true;}});
  assert.equal(prevented,true);assert.equal(el('battle').hidden,true);assert.equal(el('lobby').hidden,false);assert.ok(![...timers.values()].some(t=>t.ms===950));
  assert.equal(closed,1);
+});
+
+test('missing legendary sprites fall back through local PNG, remote sprite, and a local placeholder',()=>{
+ const img={dataset:{pokemonSprite:'493',spriteFormat:'gif',spriteCurrent:'gif'},src:'493.gif',onerror(){}};
+ window.pokemonSpriteFallback(img);assert.equal(img.src,'493.png');
+ window.pokemonSpriteFallback(img);assert.equal(img.src,'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/493.png');
+ window.pokemonSpriteFallback(img);assert.equal(img.src,'pokeball.svg');
+ window.pokemonSpriteFallback(img);assert.equal(img.onerror,null);
+});
+
+test('Pokémon preview exposes search, role filters, selectable cards, and clear move playback controls',async()=>{
+ const preview=await readFile(new URL('./pixel-effects-preview.html',import.meta.url),'utf8');
+ for(const required of ['id="pokemon-search"','id="role-filters"','id="pokemon-list"','aria-pressed','id="play-all"','data-preview','previewSpriteFallback','max-width:560px'])assert.ok(preview.includes(required),`Missing preview UI affordance: ${required}`);
 });
