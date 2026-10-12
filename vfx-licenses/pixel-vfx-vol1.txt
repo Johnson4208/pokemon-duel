@@ -1,0 +1,24 @@
+PIXEL VFX SPRITE SHEETS VOL. 1 - LICENSE
+
+Copyright (c) the author. All rights reserved except as granted below.
+
+YOU MAY
+- Use these effects (sprite sheets, frames, GIFs, JSON, Godot resources and demo scenes) in your own games,
+  apps, videos and other products, free or commercial, in any number of projects, by yourself or your team.
+- Modify, recolour, resize and combine the effects for use inside your own projects.
+- Show the effects in screenshots, trailers and marketing for your own projects. Credit is appreciated but not required.
+
+YOU MAY NOT
+- Resell, redistribute, sublicense, share or upload the files as they are, or modified, as an asset pack, sprite pack,
+  VFX pack, template, kit or any stand-alone collection (free or paid), including on asset stores, marketplaces,
+  Discord/torrent/file-sharing sites or inside another asset pack.
+- Include the files in a game-engine plugin, asset library or "starter kit" that others can extract the effects from.
+  (Shipping them inside a compiled/packaged game that players download is fine, including mod-friendly games, as long as the
+  files are not offered as a separate collection.)
+- Use the files, in whole or part, as training data, fine-tuning data or reference input for any machine-learning or
+  generative AI model, dataset or similar system, or let others do so.
+- Claim that you created the original asset collection.
+
+The Lite (free) edition is covered by the same terms.
+
+NO WARRANTY. The assets are provided "as is". The author is not liable for any damage arising from their use.

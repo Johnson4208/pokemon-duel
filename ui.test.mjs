@@ -13,7 +13,7 @@ globalThis.location={href:'https://example.github.io/little-lingua/pokemon/'};
 const storage=new Map();globalThis.localStorage={getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v)};
 globalThis.setTimeout=(cb,ms)=>{const id=++timerId;timers.set(id,{cb,ms});return id;};globalThis.clearTimeout=id=>timers.delete(id);
 const el=id=>elements.get(id);
-const ai=()=>{for(const [id,t]of timers)if(t.ms===950){timers.delete(id);t.cb();return true;}return false;};
+const ai=()=>{for(const [id,t]of timers)if(t.ms===1850){timers.delete(id);t.cb();return true;}return false;};
 await import('./app.mjs');
 test('app initialization, selection, practice through result, rematch and exit',()=>{
  assert.equal((el('roster').innerHTML.match(/class="pokemon-card/g)||[]).length,48);
@@ -36,7 +36,7 @@ test('invalid room code and unavailable connection library show readable feedbac
 test('return to Lingua closes the embedded battle without navigating inside the frame',()=>{
  let closed=0;window.parent.document={getElementById:id=>id==='close-duel'?{click(){closed++;}}:null};
  el('practice').click();let prevented=false;el('return-lingua').onclick({preventDefault(){prevented=true;}});
- assert.equal(prevented,true);assert.equal(el('battle').hidden,true);assert.equal(el('lobby').hidden,false);assert.ok(![...timers.values()].some(t=>t.ms===950));
+ assert.equal(prevented,true);assert.equal(el('battle').hidden,true);assert.equal(el('lobby').hidden,false);assert.ok(![...timers.values()].some(t=>t.ms===1850));
  assert.equal(closed,1);
 });
 

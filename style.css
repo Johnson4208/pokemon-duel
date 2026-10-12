@@ -3,8 +3,8 @@
 
 /* Collection effects: deterministic combat, decorative motion only. */
 .pokemon-card img{object-fit:contain;image-rendering:auto}.battle-sprite{object-fit:contain;image-rendering:auto}.move-effect{font-size:11px;margin-top:7px;line-height:1.4;color:#47684c}.status-tag{display:inline-block;padding:3px 7px;border-radius:8px;background:#f6e6cf;font-size:10px;margin-left:5px}.move-fx{position:absolute;inset:0;pointer-events:none;z-index:8;overflow:hidden}.fx-number{position:absolute;opacity:0}.enemy-number{left:72%;top:28%}.self-number{left:24%;top:58%}.heal-number{color:#348551}@keyframes hp-float{0%{opacity:0;transform:translateY(8px)}25%{opacity:1}100%{opacity:0;transform:translateY(-45px)}}
-/* Eight raster-grid frames: square pixels, hard edges and stepped motion. */
-.move-art{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}.pixel-art,.pixel-art image{image-rendering:pixelated}.px-frame{opacity:0}.show-fx .px-frame{animation:pixel-frame .12s steps(1,end);animation-delay:calc(var(--frame)*.12s)}@keyframes pixel-frame{0%,99%{opacity:1}100%{opacity:0}}.battle-sprite,.pokemon-card img{image-rendering:pixelated}.fx-number{font-family:monospace;font-size:25px;font-weight:900;color:#fff4b5;text-shadow:2px 0 #493655,-2px 0 #493655,0 2px #493655,0 -2px #493655}.show-fx .fx-number{animation:hp-float 1s steps(6,end) both;animation-delay:.35s}.battle-sprite.hit{animation:pixel-hit .35s steps(3,end)!important;filter:none}.self-sprite.dash-cast{animation:pixel-dash-self .55s steps(5,end)!important}.enemy-sprite.dash-cast{animation:pixel-dash-enemy .55s steps(5,end)!important}@keyframes pixel-hit{30%{translate:8px 0}65%{translate:-8px 0}100%{translate:0 0}}@keyframes pixel-dash-self{50%{translate:84px -32px}100%{translate:0 0}}@keyframes pixel-dash-enemy{50%{translate:-84px 32px}100%{translate:0 0}}@media(prefers-reduced-motion:reduce){.show-fx .px-frame{animation:none}.show-fx .px-frame:nth-child(5){animation:pixel-frame .65s steps(1,end)}.battle-sprite.hit,.self-sprite.dash-cast,.enemy-sprite.dash-cast,.battle-sprite.cast{animation:none!important}.show-fx .fx-number{animation:pixel-frame .8s steps(1,end)}}
+/* Sixteen raster-grid frames: square pixels, hard edges and stepped motion. */
+.move-art{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}.pixel-art,.pixel-art image{image-rendering:pixelated}.px-frame{opacity:0}.show-fx .px-frame{animation:pixel-frame .1s steps(1,end);animation-delay:calc(var(--frame)*.1s)}@keyframes pixel-frame{0%,99%{opacity:1}100%{opacity:0}}.battle-sprite,.pokemon-card img{image-rendering:pixelated}.fx-number{font-family:monospace;font-size:25px;font-weight:900;color:#fff4b5;text-shadow:2px 0 #493655,-2px 0 #493655,0 2px #493655,0 -2px #493655}.show-fx .fx-number{animation:hp-float 1s steps(6,end) both;animation-delay:.9s}.battle-sprite.hit{animation:pixel-hit .35s steps(3,end)!important;filter:none}.self-sprite.dash-cast{animation:pixel-dash-self .55s steps(5,end)!important}.enemy-sprite.dash-cast{animation:pixel-dash-enemy .55s steps(5,end)!important}@keyframes pixel-hit{30%{translate:8px 0}65%{translate:-8px 0}100%{translate:0 0}}@keyframes pixel-dash-self{50%{translate:84px -32px}100%{translate:0 0}}@keyframes pixel-dash-enemy{50%{translate:-84px 32px}100%{translate:0 0}}@media(prefers-reduced-motion:reduce){.show-fx .px-frame{animation:none}.show-fx .px-frame:nth-child(5){animation:pixel-frame .65s steps(1,end)}.battle-sprite.hit,.self-sprite.dash-cast,.enemy-sprite.dash-cast,.battle-sprite.cast{animation:none!important}.show-fx .fx-number{animation:pixel-frame .8s steps(1,end)}}
 
 /* Consistent, readable typography across the pixel battle UI. */
 :root{font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;--line:#e2e7dc}
@@ -36,3 +36,27 @@ button,input,select{font:inherit;line-height:1.35}button{min-height:38px}img{max
 .move-top{justify-content:flex-start;min-height:30px}
 .move-top strong{margin-right:auto}
 @media(max-width:600px){.arena-picker-wrap{padding:10px;margin:13px 0}.arena-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.arena-thumb{height:45px}.arena-choice-name{font-size:8px}.ability-icon{width:25px;height:25px;flex-basis:25px}.move-top{gap:4px}}
+
+/* Impact reactions follow the delivery, timed to frame 9 rather than the charge. */
+.battle-sprite.hit{animation-delay:.9s!important;animation-fill-mode:backwards!important}
+.battle-sprite.hit[data-reaction=lift]{animation:target-lift .55s steps(5,end) .85s backwards!important}
+.battle-sprite.hit[data-reaction=slam]{animation:target-slam .45s steps(4,end) .9s backwards!important}
+.battle-sprite.hit[data-reaction=push]{animation:target-push .45s steps(4,end) .9s backwards!important}
+.battle-sprite.hit[data-reaction=cut]{animation:target-cut .5s steps(5,end) .65s backwards!important}
+@keyframes target-lift{0%{translate:0 0}40%{translate:0 -17px}70%{translate:5px -10px}100%{translate:0 0}}
+@keyframes target-slam{0%{translate:0 0}35%{translate:0 11px;scale:1.05 .92}70%{translate:5px -3px}100%{translate:0 0;scale:1}}
+@keyframes target-push{0%{translate:0 0}45%{translate:14px -5px}75%{translate:8px 0}100%{translate:0 0}}
+@keyframes target-cut{0%,100%{translate:0 0}20%,60%{translate:8px -3px}40%,80%{translate:-6px 2px}}
+.paused .px-frame{animation:none!important;opacity:0}.paused .px-frame:nth-child(11){opacity:1}.paused .fx-number{display:none}
+.delivery-label{display:block;color:#42634e;font-size:11px;font-weight:800;margin:0 0 10px}
+@media(prefers-reduced-motion:reduce){.battle-sprite.hit[data-reaction]{animation:none!important}.show-fx .px-frame{animation:none!important;opacity:0}.show-fx .px-frame:nth-child(11){opacity:1}.show-fx .px-frame:nth-child(5){opacity:0}.show-fx .fx-number{animation:none!important;opacity:1}}
+
+.self-sprite.hit[data-reaction=push]{animation:target-push-self .45s steps(4,end) .9s backwards!important}
+@keyframes target-push-self{0%{translate:0 0}45%{translate:-14px 5px}75%{translate:-8px 0}100%{translate:0 0}}
+.self-sprite.dash-cast{animation:pixel-dash-self .7s steps(7,end) .35s backwards!important}.enemy-sprite.dash-cast{animation:pixel-dash-enemy .7s steps(7,end) .35s backwards!important}
+.preview-mon.hit[data-reaction=lift]{animation:target-lift .55s steps(5,end) .85s backwards}
+.preview-mon.hit[data-reaction=slam]{animation:target-slam .45s steps(4,end) .9s backwards}
+.preview-mon.hit[data-reaction=push]{animation:target-push .45s steps(4,end) .9s backwards}
+.preview-mon.hit[data-reaction=cut]{animation:target-cut .5s steps(5,end) .65s backwards}
+.preview-mon.hit[data-reaction=shake]{animation:pixel-hit .35s steps(3,end) .9s backwards}
+@media(prefers-reduced-motion:reduce){.preview-mon.hit,.self-sprite.dash-cast,.enemy-sprite.dash-cast,.self-sprite.hit[data-reaction=push]{animation:none!important}}

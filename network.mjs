@@ -1,4 +1,4 @@
-import {makeBattle,act,validTeam} from './engine.mjs?v=roles-v1';
+import {makeBattle,act,validTeam} from './engine.mjs?v=grand-v1';
 const VERSION=2,PREFIX='lingua-pokemon-v2-';
 export class Room {
  constructor({Peer,onChange=()=>{},onError=()=>{},onStatus=()=>{}}){this.Peer=Peer;this.onChange=onChange;this.onError=onError;this.onStatus=onStatus;this.epoch=0;this.reset();}

@@ -1,0 +1,30 @@
+Pixel Combat VFX – Free Sample
+Copyright (c) 2026 SdavGha
+
+LICENSE — Royalty-free game asset license
+
+You MAY:
+  - Use these images in your own games, apps, videos, prototypes and other
+    projects, both commercial and non-commercial, with no limit on copies
+    or revenue.
+  - Modify, crop, recolor, combine or otherwise edit the images to fit
+    your project.
+  - Use them in an unlimited number of your own projects.
+
+You MAY NOT:
+  - Resell, redistribute, share or give away these images (or edited
+    versions of them) as standalone files, as part of another asset pack,
+    or on any asset marketplace.
+  - Claim these images as your own original artwork.
+  - Use them to train machine-learning or AI models.
+
+Attribution is appreciated but not required.
+
+Notes:
+  - These effects were produced with the help of AI image-generation tools
+    and then processed (pixel-grid alignment, palette reduction, scaling)
+    by the author. Similar imagery may exist elsewhere; no claim of
+    uniqueness or exclusivity is made.
+  - Provided "as is", without warranty of any kind.
+
+Questions: zodiac2600@gmail.com

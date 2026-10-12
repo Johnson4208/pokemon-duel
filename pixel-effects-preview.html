@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Xem trước Pokémon · Little Lingua</title>
-  <link rel="stylesheet" href="style.css?v=preview-v2">
+  <link rel="stylesheet" href="style.css?v=grand-v1">
   <style>
     :root{color-scheme:light}
     body{margin:0;padding:clamp(14px,3vw,36px);background:#f8f7ef;color:#273932;font-family:system-ui,sans-serif}
@@ -89,7 +89,7 @@
 </main>
 <script type="module">
 import {ROSTER,SHOP,ROLE_LABELS,ROLE_ICONS,TYPES} from './catalog.mjs';
-import {effectMarkup} from './effects.mjs?v=pack-v9';
+import {effectMarkup,moveDelivery,DELIVERY_LABELS,targetReaction} from './effects.mjs?v=grand-v1';
 const list=document.getElementById('pokemon-list'),filters=document.getElementById('role-filters'),search=document.getElementById('pokemon-search'),count=document.getElementById('pokemon-count'),heading=document.getElementById('selected-heading'),grid=document.getElementById('move-grid'),help=document.getElementById('preview-help');
 let selectedId=384,activeRole='all',runTimer;
 const roles=['all','striker','support','attrition','tank','balanced','legendary'];
@@ -100,16 +100,16 @@ window.previewSpriteFallback=img=>{const id=img.dataset.spriteId,current=img.dat
 function renderFilters(){filters.innerHTML=roles.map(role=>`<button class="filter-button" type="button" data-role="${role}" aria-pressed="${activeRole===role}">${role==='all'?'✨':ROLE_ICONS[role]||''} ${roleText[role]}</button>`).join('');}
 function visiblePokemon(){const query=search.value.trim().toLocaleLowerCase();return ROSTER.filter(p=>(activeRole==='all'||p.role===activeRole)&&(!query||p.name.toLocaleLowerCase().includes(query)));}
 function renderList(){const shown=visiblePokemon();count.textContent=`${shown.length} Pokémon`;list.innerHTML=shown.length?shown.map(p=>{const item=SHOP.find(s=>s.id===p.id);return `<button class="pokemon-option" type="button" data-pokemon="${p.id}" aria-pressed="${selectedId===p.id}">${sprite(p.id,'png',p.name)}<strong>${p.name}</strong><small>${item?`${item.price} ⭐`:'Miễn phí'} · ${ROLE_ICONS[p.role]} ${roleText[p.role]}</small></button>`;}).join(''):'<p class="empty-results">Không tìm thấy Pokémon. Thử tên khác nhé.</p>';}
-function renderMoves(){const p=ROSTER.find(x=>x.id===selectedId)||ROSTER[0],item=SHOP.find(x=>x.id===p.id);heading.innerHTML=`${sprite(p.id,'png',p.name).replace('<img ', '<img class="selected-sprite" ')}<div class="selected-meta"><h2 id="selected-name">${p.name}</h2><div class="badges"><span class="badge">${TYPES[p.type][2]} ${TYPES[p.type][0]}</span><span class="badge role-badge">${ROLE_ICONS[p.role]} ${roleText[p.role]}</span><span class="badge">${item?`${item.price} ⭐ đổi sao`:'Miễn phí'}</span></div></div>`;
- grid.innerHTML=p.moves.map((m,i)=>`<article class="move-card"><div class="mini-arena"><div class="move-fx paused" id="preview-fx-${i}">${effectMarkup({type:'move',moveName:m.name,moveType:m.type,effect:m.effect,hit:true,damage:m.power||0},true,p.id)}</div>${sprite(p.id,'gif',p.name).replace('<img ', '<img class="preview-mon preview-self" ')}${sprite(9,'png','Blastoise').replace('<img ', '<img class="preview-mon preview-enemy" ')}</div><div class="move-info"><h3 class="move-title"><span class="move-type-icon" aria-hidden="true">${TYPES[m.type][2]}</span>${m.name}</h3><p>${m.power===0?`Hỗ trợ · ${m.effect||'kỹ năng đội'}`:p.role==='attrition'?'Đòn cấu rỉa · có thể gây hiệu ứng kéo dài':`Sức mạnh ${m.power} · chính xác ${m.accuracy}%`}</p><button class="preview-action" type="button" data-preview="${i}">▶ Xem chiêu ${i+1}</button></div></article>`).join('');
+function renderMoves(){clearInterval(runTimer);const p=ROSTER.find(x=>x.id===selectedId)||ROSTER[0],item=SHOP.find(x=>x.id===p.id);heading.innerHTML=`${sprite(p.id,'png',p.name).replace('<img ', '<img class="selected-sprite" ')}<div class="selected-meta"><h2 id="selected-name">${p.name}</h2><div class="badges"><span class="badge">${TYPES[p.type][2]} ${TYPES[p.type][0]}</span><span class="badge role-badge">${ROLE_ICONS[p.role]} ${roleText[p.role]}</span><span class="badge">${item?`${item.price} ⭐ đổi sao`:'Miễn phí'}</span></div></div>`;
+ grid.innerHTML=p.moves.map((m,i)=>`<article class="move-card"><div class="mini-arena"><div class="move-fx paused" id="preview-fx-${i}">${effectMarkup({type:'move',moveName:m.name,moveType:m.type,effect:m.effect,hit:true,damage:0},true,p.id)}</div>${sprite(p.id,'gif',p.name).replace('<img ', '<img class="preview-mon preview-self" ')}${sprite(9,'png','Blastoise').replace('<img ', '<img class="preview-mon preview-enemy" ')}</div><div class="move-info"><h3 class="move-title"><span class="move-type-icon" aria-hidden="true">${TYPES[m.type][2]}</span>${m.name}</h3><p>${m.power===0?`Hỗ trợ · ${m.effect||'kỹ năng đội'}`:p.role==='attrition'?'Đòn cấu rỉa · có thể gây hiệu ứng kéo dài':`Sức mạnh ${m.power} · chính xác ${m.accuracy}%`}</p><small class="delivery-label">${DELIVERY_LABELS[moveDelivery({type:'move',moveName:m.name,moveType:m.type,effect:m.effect})]}</small><button class="preview-action" type="button" data-preview="${i}">▶ Xem chiêu ${i+1}</button></div></article>`).join('');
  renderList();help.textContent=`${p.name} có ${p.moves.length} chiêu. Bấm từng nút để xem, hoặc chạy cả bộ chiêu.`;}
-function play(index){const fx=document.getElementById(`preview-fx-${index}`);if(!fx)return;fx.classList.remove('paused','show-fx');void fx.offsetWidth;fx.classList.add('show-fx');}
+function play(index){const fx=document.getElementById(`preview-fx-${index}`);if(!fx)return;fx.classList.remove('paused','show-fx');void fx.offsetWidth;fx.classList.add('show-fx');const p=ROSTER.find(x=>x.id===selectedId),m=p?.moves[index],enemy=fx.parentElement.querySelector('.preview-enemy');enemy.classList.remove('hit');if(m?.power>0){enemy.dataset.reaction=targetReaction({type:'move',moveName:m.name,moveType:m.type,effect:m.effect});void enemy.offsetWidth;enemy.classList.add('hit');}}
 renderFilters();renderMoves();
 filters.addEventListener('click',e=>{const b=e.target.closest('[data-role]');if(!b)return;activeRole=b.dataset.role;renderFilters();renderList();});
 search.addEventListener('input',renderList);
 list.addEventListener('click',e=>{const b=e.target.closest('[data-pokemon]');if(!b)return;selectedId=Number(b.dataset.pokemon);renderMoves();});
 grid.addEventListener('click',e=>{const b=e.target.closest('[data-preview]');if(b)play(Number(b.dataset.preview));});
-document.getElementById('play-all').addEventListener('click',()=>{clearInterval(runTimer);let i=0;play(i++);runTimer=setInterval(()=>{if(i>=4){clearInterval(runTimer);return;}play(i++);},850);});
+document.getElementById('play-all').addEventListener('click',()=>{clearInterval(runTimer);let i=0;play(i++);runTimer=setInterval(()=>{if(i>=4){clearInterval(runTimer);return;}play(i++);},1750);});
 if(new URLSearchParams(location.search).has('embedded')){document.querySelector('.preview-back').hidden=true;const playLink=document.querySelector('.preview-footer a');playLink.href='#';playLink.textContent='Quay lại mục Play →';playLink.addEventListener('click',event=>{event.preventDefault();window.parent.postMessage({type:'lingua:show-play'},location.origin);});}
 </script>
 </body>

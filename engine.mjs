@@ -41,6 +41,6 @@ export function act(state,player,action,revision){
   p.statusTurns--;if(p.statusTurns<=0){p.status=null;p.statusTurns=0;}
   if(p.hp===0){add(`${p.name} đã gục!`);const next=mine.team.findIndex(t=>t.hp>0);if(next<0){s.phase='finished';s.winner=1-player;add(`${enemy.name} thắng trận!`);}else mine.active=next;}
  }
- s.revision++;s.turn=1-player;s.log=s.log.slice(-60);s.last={player,type:action.type,hit,damage:damageDone,heal:healed,moveType,moveName,effect};return {ok:true,state:s};
+ s.revision++;s.turn=1-player;s.log=s.log.slice(-60);s.last={player,actorId:p.id,targetId:q.id,type:action.type,hit,damage:damageDone,heal:healed,moveType,moveName,effect};return {ok:true,state:s};
 }
 export function chooseAI(s,player){const own=s.players[player],enemy=s.players[1-player].team[s.players[1-player].active],p=own.team[own.active];if(own.potion&&p.hp<p.maxHp*.3)return {type:'potion'};const usable=p.moves.map((m,i)=>({m,i})).filter(x=>x.m.pp>0);const heal=usable.find(x=>x.m.effect==='heal');if(heal&&p.hp<p.maxHp*.58)return {type:'move',index:heal.i};if(!p.focused&&p.hp>p.maxHp*.55&&p.role==='support'){const focus=usable.find(x=>x.m.effect==='focus');if(focus)return {type:'move',index:focus.i};}const available=usable.filter(x=>x.m.power>0).map(({m,i})=>({i,score:m.power*effectiveness(m.type,enemy.type)*(p.type===m.type?1.2:1)*m.accuracy/100})).sort((a,b)=>b.score-a.score);const finiteGuard=usable.find(x=>x.m.effect==='guard');return available.length?{type:'move',index:available[0].i}:finiteGuard?{type:'move',index:finiteGuard.i}:{type:'struggle'};}
