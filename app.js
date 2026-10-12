@@ -244,6 +244,9 @@
     if (!validViews.includes(name)) name = 'today';
     $$('.view').forEach(view => view.classList.toggle('active', view.id === `view-${name}`));
     $$('.nav-link').forEach(button => button.classList.toggle('active', button.dataset.view === name));
+    $('#mobile-more').classList.toggle('active', !['today', 'learn', 'play', 'shop'].includes(name));
+    const moreMenu = $('#mobile-more-dialog');
+    if (moreMenu?.open) moreMenu.close();
     const labels = { today: 'My day', learn: 'Learn Vietnamese', play: 'Play & practice', stories: 'Story garden', progress: 'My progress', shop:'Pokémon Shop', profile:'My profile' };
     $('#page-crumb').textContent = labels[name];
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -594,6 +597,12 @@
 
   // Navigation and learning controls.
   $$('.nav-link').forEach(button => button.addEventListener('click', () => changeView(button.dataset.view)));
+  $('#mobile-more').addEventListener('click', () => $('#mobile-more-dialog').showModal());
+  $('#mobile-more-close').addEventListener('click', () => $('#mobile-more-dialog').close());
+  $('#mobile-grownup-button').addEventListener('click', () => { $('#mobile-more-dialog').close(); openModal(); });
+  $('#mobile-more-dialog').addEventListener('click', event => {
+    if (event.target === $('#mobile-more-dialog')) $('#mobile-more-dialog').close();
+  });
   $$('[data-go]').forEach(button => button.addEventListener('click', () => changeView(button.dataset.go)));
   $$('[data-lesson]').forEach(button => button.addEventListener('click', () => startLesson(button.dataset.lesson)));
   $('#start-quest').addEventListener('click', () => startLesson('words'));

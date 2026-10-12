@@ -258,14 +258,6 @@ h1 { margin: 8px 0 3px; font-weight: 900; letter-spacing: -1.5px; font-size: cla
   .scramble-actions .button { width: 100%; }
 }
 
-/* Shared typography and layout polish */
-:root{font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;--line:#e9e8e2;--shadow:0 12px 32px rgba(50,54,88,.08)}
-body{font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;background:var(--paper,#fffdf9)}
-h1,h2,h3,.brand-name{font-family:'Fredoka','Nunito',system-ui,sans-serif;letter-spacing:-.025em;line-height:1.2}
-button,input,select,textarea{font:inherit;line-height:1.35}
-button{min-height:40px}img{max-width:100%}
-[hidden]{display:none!important}
-
 /* Touch-first navigation and safe-area layout for phones and small tablets. */
 .mobile-bottom-nav { display: none; }
 .mobile-more-dialog { display: none; }
@@ -328,3 +320,11 @@ button{min-height:40px}img{max-width:100%}
   .mobile-bottom-nav { padding-inline: 5px; }
   .mobile-nav-link small { font-size: 8px; }
 }
+
+/* Shared typography and layout polish */
+:root{font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;--line:#e9e8e2;--shadow:0 12px 32px rgba(50,54,88,.08)}
+body{font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;background:var(--paper,#fffdf9)}
+h1,h2,h3,.brand-name{font-family:'Fredoka','Nunito',system-ui,sans-serif;letter-spacing:-.025em;line-height:1.2}
+button,input,select,textarea{font:inherit;line-height:1.35}
+button{min-height:40px}img{max-width:100%}
+[hidden]{display:none!important}

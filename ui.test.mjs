@@ -18,8 +18,9 @@ await import('./app.mjs');
 test('app initialization, selection, practice through result, rematch and exit',()=>{
  assert.equal((el('roster').innerHTML.match(/class="pokemon-card/g)||[]).length,48);
  assert.equal(el('selection-count').textContent,'3 / 3');
+ assert.equal((el('arena-picker').innerHTML.match(/class="arena-choice /g)||[]).length,5);
  learner.profile.nickname='<script>unsafe</script>';
- el('practice').click();assert.equal(el('battle').hidden,false);assert.equal(el('lobby').hidden,true);
+ el('practice').click();assert.equal(el('battle').hidden,false);assert.equal(el('lobby').hidden,true);assert.equal(el('arena').attrs['data-battlefield'],'meadow');assert.equal((el('moves').innerHTML.match(/class="ability-icon/g)||[]).length,4);
  ai();assert.ok(el('self-info').innerHTML.includes('&lt;script&gt;'));
  if(el('guard').disabled)ai();el('guard').click();ai();
  let steps=0;

@@ -2,13 +2,13 @@ import {makeBattle,act,validTeam} from './engine.mjs?v=roles-v1';
 const VERSION=2,PREFIX='lingua-pokemon-v2-';
 export class Room {
  constructor({Peer,onChange=()=>{},onError=()=>{},onStatus=()=>{}}){this.Peer=Peer;this.onChange=onChange;this.onError=onError;this.onStatus=onStatus;this.epoch=0;this.reset();}
- reset(){this.host=false;this.connected=false;this.index=0;this.code='';this.conn=null;this.peer=null;this.battle=null;this.lobby={names:['Trainer 1','Trainer 2'],teams:[null,null],ready:[false,false],votes:[false,false]};}
+ reset(){this.host=false;this.connected=false;this.index=0;this.code='';this.conn=null;this.peer=null;this.battle=null;this.lobby={names:['Trainer 1','Trainer 2'],teams:[null,null],ready:[false,false],votes:[false,false],battlefield:'meadow'};}
  close(){this.epoch++;clearTimeout(this.timeout);clearTimeout(this.handshake);const peer=this.peer;this.reset();peer?.destroy();}
  snapshot(){return {index:this.index,host:this.host,code:this.code,connected:this.connected,lobby:structuredClone(this.lobby),battle:structuredClone(this.battle)};}
  emit(){this.onChange(this.snapshot());}
  send(data){if(this.conn?.open)this.conn.send({...data,v:VERSION});}
  sync(){this.send({type:'state',lobby:this.lobby,battle:this.battle});this.emit();}
- start(host,code,name){this.close();this.host=host;this.index=host?0:1;this.code=code;this.lobby.names[this.index]=name;const epoch=this.epoch;
+ start(host,code,name,battlefield='meadow'){this.close();this.host=host;this.index=host?0:1;this.code=code;this.lobby.names[this.index]=name;if(host)this.lobby.battlefield=['meadow','forest','desert','whitewood','ice-castle'].includes(battlefield)?battlefield:'meadow';const epoch=this.epoch;
   this.onStatus('Đang kết nối máy chủ phòng…');
   try{this.peer=host?new this.Peer(PREFIX+code,window.POKEMON_NETWORK||{}):new this.Peer(window.POKEMON_NETWORK||{});}catch(e){this.onError('Không khởi tạo được kết nối: '+e.message);return;}
   this.timeout=setTimeout(()=>{if(epoch!==this.epoch)return;this.onError('Kết nối quá lâu. Kiểm tra mạng rồi tạo / vào phòng lại.');this.close();this.emit();},20000);
@@ -32,7 +32,8 @@ export class Room {
   else if(d.type==='rematch')this.vote(1);
  }
  ready(team){if(!this.connected)return;if(this.host)this.setReady(0,team);else this.send({type:'ready',team});}
- setReady(i,team){if(this.battle||!validTeam(team)||this.lobby.ready[i])return;this.lobby.teams[i]=[...team];this.lobby.ready[i]=true;if(this.lobby.ready.every(Boolean))this.battle=makeBattle(this.lobby.teams,this.lobby.names,crypto.getRandomValues(new Uint32Array(1))[0]);this.sync();}
+ setReady(i,team){if(this.battle||!validTeam(team)||this.lobby.ready[i])return;this.lobby.teams[i]=[...team];this.lobby.ready[i]=true;if(this.lobby.ready.every(Boolean)){this.battle=makeBattle(this.lobby.teams,this.lobby.names,crypto.getRandomValues(new Uint32Array(1))[0]);this.battle.battlefield=this.lobby.battlefield||'meadow';}this.sync();}
+ setBattlefield(id){if(!this.host||this.battle||this.lobby.ready.some(Boolean)||!['meadow','forest','desert','whitewood','ice-castle'].includes(id))return;this.lobby.battlefield=id;this.sync();}
  action(action){if(!this.connected||!this.battle)return;if(this.host)this.apply(0,action,this.battle.revision);else this.send({type:'action',action,revision:this.battle.revision});}
  apply(i,action,revision){const r=act(this.battle,i,action,revision);if(r.ok){this.battle=r.state;this.sync();}}
  rematch(){if(this.host)this.vote(0);else this.send({type:'rematch'});}

@@ -11,3 +11,28 @@
 body{font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;line-height:1.5}
 h1,h2,h3,.brand{font-family:'Fredoka','Nunito',system-ui,sans-serif;letter-spacing:-.02em;line-height:1.2}
 button,input,select{font:inherit;line-height:1.35}button{min-height:38px}img{max-width:100%}.type-tag{white-space:nowrap}.move-effect{line-height:1.4;overflow-wrap:anywhere}.move-meta{line-height:1.45}
+
+/* Expanded battlefield chooser + crisp, readable skill icons. */
+.arena-picker-wrap{margin:18px 0 16px;padding:13px;background:#f8f7ef;border:1px solid #e9e5d9;border-radius:12px}
+.arena-picker-heading{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px;font-size:8px;letter-spacing:1px;font-weight:800;color:#718174}
+.arena-picker-heading small{font-size:8px;letter-spacing:0;font-weight:600;text-align:right}
+.arena-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.arena-choice{min-width:0;padding:5px;border:1px solid #dedfd5;border-radius:9px;background:#fffefa;color:var(--ink);text-align:left;overflow:hidden}
+.arena-choice.selected{border-color:#e85545;box-shadow:0 0 0 2px #e8554520}
+.arena-choice:disabled{opacity:.68}
+.arena-thumb{display:block;height:52px;border-radius:5px;overflow:hidden;background:#e2e9e3}
+.arena-thumb[data-thumb="meadow"]{background:linear-gradient(0deg,#8cb778 0 23%,transparent 23%),radial-gradient(ellipse at 15% 100%,#abc68e 0 30%,transparent 31%),radial-gradient(ellipse at 85% 100%,#bed4a5 0 32%,transparent 33%),linear-gradient(#d7e9e3 0%,#e4eee1 57%,#c0d396 58%,#d5dfa4 100%)}
+.arena-thumb img{display:block;width:100%;height:100%;object-fit:cover;image-rendering:auto}
+.arena-choice-name{display:flex;align-items:center;gap:5px;margin-top:5px;font-size:9px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arena-choice-name i{font-style:normal;font-size:12px}
+.arena{background-size:cover!important;background-position:center 60%!important;transition:background .2s ease}
+.arena[data-battlefield="forest"]{background-image:linear-gradient(#15231612,#17231528),url('assets/arenas/forest.webp')!important}
+.arena[data-battlefield="desert"]{background-image:linear-gradient(#38180c08,#38180c26),url('assets/arenas/desert.webp')!important}
+.arena[data-battlefield="whitewood"]{background-image:linear-gradient(#fff5de10,#263a2320),url('assets/arenas/whitewood.webp')!important}
+.arena[data-battlefield="ice-castle"]{background-image:linear-gradient(#091b3810,#091b3828),url('assets/arenas/ice-castle.webp')!important}
+.arena[data-battlefield="forest"] .sky-cloud,.arena[data-battlefield="forest"] .hill,.arena[data-battlefield="desert"] .sky-cloud,.arena[data-battlefield="desert"] .hill,.arena[data-battlefield="whitewood"] .sky-cloud,.arena[data-battlefield="whitewood"] .hill,.arena[data-battlefield="ice-castle"] .sky-cloud,.arena[data-battlefield="ice-castle"] .hill{display:none}
+.arena[data-battlefield="forest"] .arena-label,.arena[data-battlefield="desert"] .arena-label,.arena[data-battlefield="ice-castle"] .arena-label{color:#fff;text-shadow:0 1px 4px #102033}
+.ability-icon{width:29px;height:29px;flex:0 0 29px;object-fit:contain;image-rendering:pixelated;background:#fff;border:1px solid color-mix(in srgb,var(--type) 36%,#e2e5da);border-radius:6px;padding:2px}
+.move-top{justify-content:flex-start;min-height:30px}
+.move-top strong{margin-right:auto}
+@media(max-width:600px){.arena-picker-wrap{padding:10px;margin:13px 0}.arena-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.arena-thumb{height:45px}.arena-choice-name{font-size:8px}.ability-icon{width:25px;height:25px;flex-basis:25px}.move-top{gap:4px}}
