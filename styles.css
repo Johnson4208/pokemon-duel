@@ -216,6 +216,7 @@ h1 { margin: 8px 0 3px; font-weight: 900; letter-spacing: -1.5px; font-size: cla
 .game-word-card-copy strong { max-width: 100%; overflow-wrap: anywhere; color: #4c5572; font-size: 12px; font-weight: 1000; }
 .game-word-card-copy small { max-width: 100%; overflow-wrap: anywhere; color: #9298aa; font-size: 10px; line-height: 1.35; }
 .game-word-card-copy em { color: #a69fca; font-size: 8px; font-style: normal; font-weight: 800; }
+.game-word-card-copy .word-star-status { color: #9a7a33; font-size: 9px; font-weight: 900; }
 .game-word-check { display: grid; place-items: center; width: 23px; height: 23px; flex-shrink: 0; border: 1px solid #e7e5f3; border-radius: 50%; color: #9d96ca; background: white; font-size: 13px; font-weight: 900; }
 .game-word-card.selected .game-word-check { border-color: #8072dd; background: #8072dd; color: white; }
 .game-word-load-more { display: block; margin: 15px auto 0; }

@@ -247,7 +247,7 @@
     $('#mobile-more').classList.toggle('active', !['today', 'learn', 'play', 'shop'].includes(name));
     const moreMenu = $('#mobile-more-dialog');
     if (moreMenu?.open) moreMenu.close();
-    const labels = { today: 'My day', learn: 'Learn Vietnamese', play: 'Play & practice', stories: 'Story garden', progress: 'My progress', shop:'Pokémon Shop', profile:'My profile' };
+    const labels = { today: 'My day', learn: 'Learn Vietnamese', play: 'Play & practice', stories: 'Story garden', progress: 'My progress', shop:'Shop', profile:'My profile' };
     $('#page-crumb').textContent = labels[name];
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (name === 'learn') renderVocab();
@@ -278,7 +278,7 @@
     $('#game-word-search').placeholder=`Search ${LANG.name} or ${LANG.hint}…`;
     $('#view-learn .helper-text').textContent=`Tap ♫ to hear ${LANG.name}; Shift-click for slower audio.`;
     $('#view-play .welcome-copy').textContent='Practice words, collect stars, or battle with your Pokémon team.';
-    $('.game-side-yellow p:last-of-type').textContent='Each vocabulary entry’s first solved puzzle earns one star. Keep exploring new words!';
+    $('.game-side-yellow p:last-of-type').textContent='Each word earns one star once, whether you learn it or solve its first puzzle. Repeats earn no extra stars!';
     $('.game-side-blue p').textContent=`Say the ${LANG.hint} clue, listen to the ${LANG.name} word, then try building it with the tiles.`;
     $('.hero-copy p').textContent=`Learn useful ${LANG.name} words, hear their pronunciation, and build confidence one little step at a time.`;
     $('.lesson-card.card-peach h3').textContent=`${LANG.name} starter words`;
@@ -340,6 +340,11 @@
     });
   }
 
+  function hasEarnedWordStar(id) {
+    const prefix=`${state.language}:`, word=`${prefix}${id}`;
+    return (state.completed||[]).some(key=>key===`word:${word}`||key===`learn:${word}`||key===`solve:${word}`);
+  }
+
   function renderVocab() {
     const grid = $('#vocab-grid');
     if (!grid) return;
@@ -348,12 +353,14 @@
     const visibleWords = words.slice(0, currentPage * PAGE_SIZE);
     grid.innerHTML = visibleWords.map(item => {
       const known = state.known.includes(item.id);
+      const earned = hasEarnedWordStar(item.id);
+      const learnLabel = known ? (earned ? '✓ Learned · star collected' : '✓ Learned') : (earned ? 'Mark learned · no new star' : 'Mark learned · earn 1 star');
       return `<article class="vocab-card ${known ? 'known' : ''}" data-vocab-id="${escapeHTML(item.id)}">
         <div class="vocab-card-top"><span class="vocab-category">${escapeHTML(item.categoryLabel)}</span><span class="vocab-card-number">${state.language.toUpperCase()}</span></div>
         <div class="vocab-emoji" aria-hidden="true">${escapeHTML(item.emoji)}</div>
         <div class="vocab-word"><h3 lang="${LANG.speech}">${escapeHTML(item.vi)}</h3>${item.pinyin?`<span class="pinyin">${escapeHTML(item.pinyin)}</span>`:""}<button class="speaker-button" data-speak="${escapeHTML(item.id)}" aria-label="Hear ${escapeHTML(item.vi)} in ${LANG.name}" title="Hear ${LANG.name} pronunciation">♫</button></div>
         <p class="vocab-meaning"><span>${LANG.hint}</span>${escapeHTML(item.en)}</p>
-        <button class="know-button" data-known="${escapeHTML(item.id)}">${known ? '✓ Learned' : 'Mark as learned'}</button>
+        <button class="know-button" data-known="${escapeHTML(item.id)}">${learnLabel}</button>
       </article>`;
     }).join('');
     $('#learned-count').textContent = state.known.length;
@@ -367,10 +374,12 @@
 
   async function toggleKnown(id) {
     if(!VOCAB.some(w=>w.id===id))return;
-    const result=state.known.includes(id)
+    const wasKnown=state.known.includes(id);
+    const earned=hasEarnedWordStar(id);
+    const result=wasKnown
       ? await accountAction({type:'unlearn',id:`${state.language}:${id}`})
       : await accountAction({type:'reward',key:`learn:${state.language}:${id}`,day:localDateKey()});
-    if(result)toast('A little step forward! ✨');
+    if(result)toast(!wasKnown&&earned?'This word already earned its star. It is now marked as learned.':'A little step forward! ✨');
   }
 
   function startLesson(kind) {
@@ -417,9 +426,10 @@
     const visibleWords = words.slice(0, gameWordPage * GAME_PICKER_PAGE_SIZE);
     list.innerHTML = visibleWords.map(item => {
       const selected = selectedGameWord && item.id === selectedGameWord.id;
+      const earned=hasEarnedWordStar(item.id);
       return `<button type="button" class="game-word-card ${selected ? 'selected' : ''}" data-game-word="${escapeHTML(item.id)}" aria-pressed="${selected ? 'true' : 'false'}">
         <span class="game-word-emoji" aria-hidden="true">${escapeHTML(item.emoji)}</span>
-        <span class="game-word-card-copy"><strong lang="${LANG.speech}">${escapeHTML(item.vi)}</strong>${item.pinyin?`<span class="pinyin">${escapeHTML(item.pinyin)}</span>`:""}<small>${escapeHTML(item.en)}</small><em>${escapeHTML(item.categoryLabel)}</em></span>
+        <span class="game-word-card-copy"><strong lang="${LANG.speech}">${escapeHTML(item.vi)}</strong>${item.pinyin?`<span class="pinyin">${escapeHTML(item.pinyin)}</span>`:""}<small>${escapeHTML(item.en)}</small><em>${escapeHTML(item.categoryLabel)}</em><small class="word-star-status">${earned?'✓ Star already earned':'⭐ Earn a star on the first solve'}</small></span>
         <span class="game-word-check" aria-hidden="true">${selected ? '✓' : '+'}</span>
       </button>`;
     }).join('');
@@ -528,11 +538,12 @@
       puzzleSolved = true;
       renderScramble();
       const puzzleIdentity=selectedGameWord.id, accountIdentity=window.LinguaAccount.user?.uid||'guest';
+      const alreadyEarned=hasEarnedWordStar(puzzleIdentity),starsBefore=state.stars;
       const result = await accountAction({type:'reward', key:`solve:${state.language}:${selectedGameWord.id}`, day:localDateKey()});
       if((window.LinguaAccount.user?.uid||'guest')!==accountIdentity || selectedGameWord?.id!==puzzleIdentity)return;
       if(!result){puzzleSolved=false;renderScramble();return;}
       $('#question-hint').textContent = `${selectedGameWord.vi} means “${selectedGameWord.en}”. You did it!`;
-      $('#game-feedback').textContent = 'Chính xác! Perfect! You put every letter in the right place. ⭐';
+      $('#game-feedback').textContent = alreadyEarned||result.stars===starsBefore?'Chính xác! You put every letter in the right place. This word already earned its star, so no extra star was added.':'Chính xác! Perfect! You put every letter in the right place. ⭐';
       $('#game-feedback').className = 'game-feedback good';
       saveState();
       updateDashboard();
