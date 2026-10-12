@@ -21,8 +21,8 @@ jobs:
       - name: Assemble learning app with original audio
         run: |
           mkdir -p _site
-          cp *.html *.js *.mjs *.css *.svg *.png _site/
-          unzip -q speech-audio.zip -d _site
+          cp *.html *.js *.mjs *.css *.svg *.png *.gif *.webp _site/
+          unzip -oq speech-audio.zip -d _site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
