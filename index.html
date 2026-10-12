@@ -233,14 +233,14 @@
     </section>
   </div>
   <script src="vietnamese-vocab.js"></script>
-  <script src="languages.js"></script><script src="firebase-config.js"></script><script type="module" src="community.mjs?v=grand-v1"></script>
+  <script src="languages.js"></script><script src="firebase-config.js"></script><script type="module" src="community.mjs?v=grand-v2"></script>
 <dialog id="exchange-dialog" class="exchange-dialog"><img id="exchange-image" alt="Pokémon reward"><span id="exchange-voucher-icon" class="exchange-voucher-icon" aria-hidden="true" hidden>🎟️</span><h2><span id="exchange-heading">Invite</span> <span id="exchange-name"></span>?</h2><p id="exchange-copy"></p><p id="exchange-feedback" role="status"></p><div class="exchange-actions"><button id="exchange-cancel" class="button button-soft">Keep my stars</button><button id="exchange-confirm" class="button button-primary">Exchange &amp; reset to 0 ⭐</button></div></dialog><dialog id="effects-preview-dialog" aria-labelledby="effects-preview-title" style="width:min(1200px,94vw);height:90dvh;max-height:90dvh;padding:0;border:1px solid #d8decf;border-radius:18px;background:#f8f7ef;overflow:hidden">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-bottom:1px solid #d8decf"><h2 id="effects-preview-title" style="margin:0;font-size:18px">Pokémon move effects</h2><button class="button button-soft" id="close-effects-preview" autofocus>✕ Back to Little Lingua</button></div>
 <iframe id="effects-preview-frame" title="All Pokémon move effects preview" style="display:block;width:100%;height:calc(100% - 72px);border:0"></iframe></dialog>
 <style>#effects-preview-dialog::backdrop{background:rgba(34,46,38,.55)}body:has(#effects-preview-dialog[open]){overflow:hidden}</style>
 <script type="module">
 const previewDialog=document.getElementById('effects-preview-dialog'),previewFrame=document.getElementById('effects-preview-frame');
-for(const button of document.querySelectorAll('[data-effects-preview]'))button.addEventListener('click',()=>{previewFrame.src='pixel-effects-preview.html?v=grand-v1&embedded=1';previewDialog.showModal();});
+for(const button of document.querySelectorAll('[data-effects-preview]'))button.addEventListener('click',()=>{previewFrame.src='pixel-effects-preview.html?v=grand-v2&embedded=1';previewDialog.showModal();});
 document.getElementById('close-effects-preview').addEventListener('click',()=>previewDialog.close());
 previewDialog.addEventListener('close',()=>previewFrame.removeAttribute('src'));
 window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==previewFrame.contentWindow||event.data?.type!=='lingua:show-play')return;previewDialog.close();window.LinguaApp?.show('play');});

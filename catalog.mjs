@@ -38,6 +38,10 @@ const mon=(id,name,type,hp,attack,defense,speed,names,coverage,role='balanced',a
  else if(role==='attrition')moves=[m(names[0],type,58,10,100,attritionEffect||nativeEffect||'poison',45),m(names[1],coverage,52,12),m(names[2],type,78,6,90,attritionEffect||nativeEffect||'poison',65),m(names[3],type,44,8,100,attritionEffect||nativeEffect||'poison',30)];
  else moves=[m(names[0],type,65,10,100,nativeEffect,['burn','poison','chill'].includes(nativeEffect)?35:100),m(names[1],coverage,50,15),m(names[2],type,85,5,85),m(names[3],coverage,56,8,95)];
  if(role==='striker')moves=[m(names[0],type,75,10,100,nativeEffect),m(names[1],coverage,60,12),m(names[2],type,100,4,80),m(names[3],coverage,62,7,92)];
+ // The strongest damaging move is each Pokémon's signature Ultimate. Support
+ // Pokémon instead empower their first healing move so the whole roster has one.
+ const ultimate=role==='support'?moves.find(move=>move.effect==='heal'):moves.filter(move=>move.power>0).sort((a,b)=>b.power-a.power)[0];
+ if(ultimate)ultimate.ultimate=true;
  return {id,name,type,hp,attack,defense,speed,role,moves};
 };
 export const ROSTER=[

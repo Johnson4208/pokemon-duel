@@ -60,3 +60,13 @@ button,input,select{font:inherit;line-height:1.35}button{min-height:38px}img{max
 .preview-mon.hit[data-reaction=cut]{animation:target-cut .5s steps(5,end) .65s backwards}
 .preview-mon.hit[data-reaction=shake]{animation:pixel-hit .35s steps(3,end) .9s backwards}
 @media(prefers-reduced-motion:reduce){.preview-mon.hit,.self-sprite.dash-cast,.enemy-sprite.dash-cast,.self-sprite.hit[data-reaction=push]{animation:none!important}}
+
+/* Let large sprites and pixel shards reach the arena edge without being cut by the SVG viewport. */
+.move-fx{overflow:visible}
+.move-art{overflow:visible}
+.move.ultimate-move{border:2px solid #c9a344;background:linear-gradient(135deg,#fff8df,color-mix(in srgb,var(--type) 12%,#fffefa));box-shadow:0 2px 0 #e0c87555}
+.ultimate-badge{flex:0 0 auto;padding:3px 5px;border-radius:5px;background:#f3d777;color:#5a4110;font-size:8px;font-weight:900;letter-spacing:.3px}
+.move.ultimate-move:disabled{opacity:.58}
+.move-art.fx-ultimate{filter:drop-shadow(0 0 3px #ffe68488)}
+.show-fx .fx-ultimate .px-frame{animation-duration:.1s}
+.team-pokemon .ultimate-cooldown{display:inline-block;margin-top:2px;color:#9b721f;font-weight:800}

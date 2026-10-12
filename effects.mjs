@@ -1,5 +1,5 @@
 import {SHOP} from './catalog.mjs';
-import {VFX_ASSETS,VFX_TILE,VFX_FRAMES,VFX_PAGE_ROWS} from './vfx-assets.mjs?v=grand-v1';
+import {VFX_ASSETS,VFX_TILE,VFX_FRAMES,VFX_PAGE_ROWS} from './vfx-assets.mjs?v=grand-v2';
 const hash=s=>[...String(s)].reduce((n,c)=>(n*31+c.charCodeAt(0))>>>0,7);
 const clamp=(n,a=0,b=1)=>Math.max(a,Math.min(b,n));
 export function effectTier(id){const price=SHOP.find(p=>p.id===Number(id))?.price||0;return price>=120?3:price>=30?2:price?1:0;}
@@ -49,10 +49,10 @@ const signatures={
 export function moveRecipe(last,actorId=25){const base=families[last.moveType]||families.normal,special=signatures[last.moveName];const seed=hash(`${actorId}:${last.moveName||last.type}`);return {charge:special?.[0]||base[0],travel:special?.[1]||base[1],impact:special?.[2]||base[2],accent:special?.[3]||base[3],color:base[4],delivery:moveDelivery(last),seed,tier:effectTier(actorId)};}
 export function effectMarkup(last,self,actorId=25){
  if(!['move','struggle','guard','potion'].includes(last.type))return '';
- const r=moveRecipe(last,actorId),mode=r.delivery,support=['heal','guard','focus'].includes(mode),sx=self?58:196,sy=self?103:51,tx=self?196:58,ty=self?51:103,dir=self?1:-1,hit=last.hit!==false,power=Number(last.damage||0),scale=1+r.tier*.12;
+ const r=moveRecipe(last,actorId),mode=r.delivery,support=['heal','guard','focus'].includes(mode),sx=self?58:196,sy=self?103:51,tx=self?196:58,ty=self?51:103,dir=self?1:-1,hit=last.hit!==false,power=Number(last.damage||0),scale=(1+r.tier*.12)*(last.ultimate?1.38:1);
  const frames=Array.from({length:VFX_FRAMES},(_,f)=>{
   const parts=[];
-  const stamp=(key,x,y,w=48,h=w,frame=f,angle=0,opacity=1)=>{const a=VFX_ASSETS[key];if(!a)throw Error('Unknown VFX sequence '+key);const fi=Math.round(clamp(frame,0,15)),width=Math.round(w),height=Math.round(h);parts.push(`<g opacity="${opacity}"${angle?` transform="rotate(${Math.round(angle)} ${Math.round(x)} ${Math.round(y)})"`:''}><svg x="${Math.round(x-width/2)}" y="${Math.round(y-height/2)}" width="${width}" height="${height}" viewBox="${fi*VFX_TILE} ${a.row*VFX_TILE} ${VFX_TILE} ${VFX_TILE}" overflow="hidden"><image href="${a.file}?v=grand-v1" width="${VFX_TILE*VFX_FRAMES}" height="${VFX_TILE*VFX_PAGE_ROWS}"/></svg></g>`);};
+  const stamp=(key,x,y,w=48,h=w,frame=f,angle=0,opacity=1)=>{const a=VFX_ASSETS[key];if(!a)throw Error('Unknown VFX sequence '+key);const fi=Math.round(clamp(frame,0,15)),width=Math.round(w),height=Math.round(h);parts.push(`<g opacity="${opacity}"${angle?` transform="rotate(${Math.round(angle)} ${Math.round(x)} ${Math.round(y)})"`:''}><svg x="${Math.round(x-width/2)}" y="${Math.round(y-height/2)}" width="${width}" height="${height}" viewBox="${fi*VFX_TILE} ${a.row*VFX_TILE} ${VFX_TILE} ${VFX_TILE}" overflow="hidden"><image href="${a.file}?v=grand-v2" width="${VFX_TILE*VFX_FRAMES}" height="${VFX_TILE*VFX_PAGE_ROWS}"/></svg></g>`);};
   const pixels=(x,y,count,radius,phase,color=r.color)=>{for(let k=0;k<count;k++){const n=(r.seed+k*97)%360,a=n*Math.PI/180,d=radius*(.45+(k%4)*.18),size=2+(k%2);parts.push(`<rect x="${Math.round(x+Math.cos(a)*d)}" y="${Math.round(y+Math.sin(a)*d+phase)}" width="${size}" height="${size}" fill="${color}" opacity="${.85-k%3*.15}"/>`);}};
   const t=clamp((f-4)/5),impact=clamp((f-9)/6)*15,angle=Math.atan2(ty-sy,tx-sx)*180/Math.PI,ix=hit?tx:tx+dir*28,iy=hit?ty:ty-18;
   if(support){
@@ -91,6 +91,7 @@ export function effectMarkup(last,self,actorId=25){
      if(f>=6){const k=(f-6)%3;stamp(r.travel,ix+(k-1)*10,iy+(k-1)*5,68+r.tier*10,68+r.tier*10,(f-6)*2,dir*(k*55-35));}
     }else{const arc=(r.seed%3-1)*22;stamp(r.travel,x,y+Math.sin(t*Math.PI)*arc,35+r.tier*8,35+r.tier*8,(f-4)*2,angle);pixels(x-dir*12,y,3,9,0);}
    }
+   if(last.ultimate&&f>=6&&f<=13){stamp('holyCircle',tx,ty,110+r.tier*12,72+r.tier*8,(f-6)*1.6,dir*(f-6)*12,.82);stamp('colorRing3',tx,ty,78+r.tier*8,54+r.tier*5,(f-6)*1.4,-dir*(f-6)*16,.66);}
    if(f>=9&&hit){
     const size=(mode==='slash'?52:62)*scale;stamp(r.impact,tx,ty,size,size,impact);
     if(r.tier>=1&&f<=13)stamp(r.accent,tx,ty+16,64+r.tier*11,30+r.tier*8,impact,0,.7);
@@ -103,5 +104,5 @@ export function effectMarkup(last,self,actorId=25){
   }
   return `<g class="px-frame" style="--frame:${f}">${parts.join('')}</g>`;
  }).join('');
- return `<svg class="move-art pixel-art fx-${mode}" data-delivery="${mode}" data-effect-tier="${r.tier}" data-recipe="${r.charge}:${r.travel}:${r.impact}" viewBox="0 0 250 150" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">${frames}</svg>${power?`<b class="fx-number ${self?'enemy-number':'self-number'}">−${power}</b>`:''}${last.heal?`<b class="fx-number heal-number ${self?'self-number':'enemy-number'}">+${Number(last.heal)} HP</b>`:''}`;
+ return `<svg class="move-art pixel-art fx-${mode}${last.ultimate?' fx-ultimate':''}" data-delivery="${mode}" data-effect-tier="${r.tier}" data-ultimate="${last.ultimate?'true':'false'}" data-recipe="${r.charge}:${r.travel}:${r.impact}" viewBox="0 0 250 150" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">${frames}</svg>${power?`<b class="fx-number ${self?'enemy-number':'self-number'}">−${power}</b>`:''}${last.heal?`<b class="fx-number heal-number ${self?'self-number':'enemy-number'}">+${Number(last.heal)} HP</b>`:''}`;
 }
