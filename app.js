@@ -240,7 +240,7 @@
   }
 
   function changeView(name) {
-    const validViews = ['today', 'learn', 'play', 'stories', 'progress', 'shop', 'profile'];
+    const validViews = ['today', 'learn', 'play', 'stories', 'progress', 'shop', 'profile', 'curriculum', 'exams'];
     if (!validViews.includes(name)) name = 'today';
     $$('.view').forEach(view => view.classList.toggle('active', view.id === `view-${name}`));
     $$('.nav-link').forEach(button => button.classList.toggle('active', button.dataset.view === name));
@@ -248,7 +248,8 @@
     const moreMenu = $('#mobile-more-dialog');
     if (moreMenu?.open) moreMenu.close();
     const labels = { today: 'My day', learn: 'Learn Vietnamese', play: 'Play & practice', stories: 'Story garden', progress: 'My progress', shop:'Shop', profile:'My profile' };
-    $('#page-crumb').textContent = labels[name];
+    $('#page-crumb').textContent = labels[name] || ({curriculum:'Giáo trình',exams:'Tạo bài kiểm tra'}[name]);
+    document.dispatchEvent(new CustomEvent('lingua:view',{detail:name}));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (name === 'learn') renderVocab();
     if (name === 'play') renderGameWordPicker();
@@ -734,3 +735,4 @@
   }};
   initCategories();initGamePicker();updateDashboard();renderVocab();renderGameWordPicker();renderStory();
 })();
+
