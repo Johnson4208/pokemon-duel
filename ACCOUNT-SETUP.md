@@ -53,4 +53,6 @@ Bundled sprites animate locally; added collection sprites use the PokeAPI sprite
 
 ## Administrator star adjustments
 
-Settings now includes a protected administrator panel. Deploying GitHub Pages does not activate server permissions. The Firebase owner must follow [ADMIN-SETUP.md](ADMIN-SETUP.md) to publish the updated rules, deploy the callable Function, configure its server-side unlock secret and grant an explicit registered account the admin custom claim. The public website contains no admin unlock secret.
+Settings includes a Firestore-only administrator panel. Follow [ADMIN-SETUP.md](ADMIN-SETUP.md): publish the full updated rules, then sign in as the explicitly designated UID and email. Cloud Functions, service-account credentials, custom claims and a Blaze upgrade are not required for this implementation. Firestore usage remains subject to the project's normal quota.
+
+The code entered in Settings is a UI lock, visible in public source; Firestore Rules enforce the actual administrator identity and session expiration. Learner email fields sync from the authenticated user's email at sign-in. Older profiles become searchable after the next sign-in. Star adjustments and immutable audit receipts must be written together.

@@ -2,7 +2,7 @@ import {effectMarkup,moveVisual,targetReaction} from './effects.mjs?v=grand-v2';
 import {collection,FREE_POKEMON,ROLE_LABELS,ROLE_TRANSLATIONS,ROLE_ICONS} from './catalog.mjs?v=roles-v1';
 import {ROSTER,TYPES,EFFECTS,effectiveness,makeBattle,act,chooseAI} from './engine.mjs?v=grand-v2';
 import {Room} from './network.mjs?v=grand-v2';
-import {account as directAccount} from './account.mjs?v=roles-v1';
+import {account as directAccount} from './account.mjs?v=free-admin-v1';
 const BATTLEFIELDS=[{id:'meadow',name:'Thung lũng nắng',icon:'🌤',thumb:'meadow'},{id:'forest',name:'Rừng Gloomwood',icon:'🌲',thumb:'forest'},{id:'desert',name:'Hoang mạc đỏ',icon:'🏜️',thumb:'desert'},{id:'whitewood',name:'Đồng cỏ Whitewood',icon:'🌼',thumb:'whitewood'},{id:'ice-castle',name:'Lâu đài băng',icon:'❄️',thumb:'ice-castle'}];
 const learner=window.parent!==window && window.parent?.LinguaAccount ? window.parent.LinguaAccount : directAccount;
 let learnerId=learner.user?.uid||'guest';
@@ -86,3 +86,4 @@ syncLearner();
 
 const returnLink=document.getElementById('return-lingua');
 if(returnLink)returnLink.onclick=event=>{if(window.parent!==window && window.parent?.LinguaAccount){const closeButton=window.parent.document.getElementById('close-duel');if(closeButton){event.preventDefault();leave();closeButton.click();}}};
+

@@ -1,6 +1,6 @@
 import {CONNECTOR_GUIDE} from './vietnamese-grammar.mjs?v=vi-connectors-v1';
 import {LESSONS,SOURCES,GLOSSES_VI,lessonVocabulary,vocabularyPool,buildTest,gradeQuestions,normalizeAnswer,validateTest} from './curriculum.mjs?v=vi-connectors-v1';
-import {account} from './account.mjs?v=shop-voucher-v1';
+import {account} from './account.mjs?v=free-admin-v1';
 const $=id=>document.getElementById(id),esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let language='vi',selected=new Set(),pool=[],visibleLimit=60,identity=null,seenLanguage=null,activeLesson=null,activeTest=null,submitted=false;
 let saved={completed:[],tests:[],results:{}};

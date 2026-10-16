@@ -1,5 +1,5 @@
 import {collection,FREE_POKEMON,ROLE_LABELS,ROLE_TRANSLATIONS,ROLE_ICONS} from './catalog.mjs?v=roles-v1';
-import {account} from './account.mjs?v=shop-voucher-v1';
+import {account} from './account.mjs?v=free-admin-v1';
 import {AVATARS,SHOP,VOUCHERS,learningState} from './profile-model.mjs?v=shop-voucher-v1';
 import {ROSTER} from './engine.mjs?v=roles-v1';
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

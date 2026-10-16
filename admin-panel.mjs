@@ -1,16 +1,17 @@
-import {account} from './account.mjs?v=shop-voucher-v1';
+import {account} from './account.mjs?v=free-admin-v1';
+import {AdminStore} from './admin-store.mjs?v=free-admin-v1';
+const store=new AdminStore(account);
 const $=id=>document.getElementById(id),panel=$('admin-settings');
-let identity=null,generation=0,session=null,target=null,pending=null,timer=null,api=null,busy=false;
+let identity=null,generation=0,session=null,target=null,pending=null,timer=null,busy=false;
 const status=message=>{$('admin-status').textContent=message;};
 function reset(){generation++;session=null;target=null;pending=null;clearTimeout(timer);$('admin-code').value='';$('admin-email').value='';$('admin-stars').value='';$('admin-reason').value='';$('admin-unlock-form').hidden=true;$('admin-tools').hidden=true;$('admin-target').hidden=true;status(account.user&&!account.guest?'Nhấn kiểm tra quyền để mở khu vực quản trị.':'Đăng nhập tài khoản đã được chủ nền tảng cấp quyền admin.');}
 function sync(){const uid=account.user?.uid||null;if(uid!==identity||account.guest||!account.profile){identity=uid;reset();}$('admin-check').disabled=!uid||!account.profile||account.guest||busy;}
 async function run(action){if(busy)return;const current=++generation,uid=account.user?.uid;busy=true;panel.querySelectorAll('button').forEach(b=>b.disabled=true);try{await action(()=>{if(current!==generation||account.user?.uid!==uid||account.guest)throw Error('Tài khoản đã thay đổi.');});}catch(error){if(current===generation)status(explain(error));}finally{busy=false;panel.querySelectorAll('button').forEach(b=>b.disabled=false);sync();}}
-function explain(error){if(['functions/unavailable','functions/not-found','functions/internal'].includes(error.code))return 'Chưa kết nối được dịch vụ quản trị. Chủ nền tảng cần triển khai Firebase Functions hoặc kiểm tra kết nối.';return error.message||'Không thể hoàn tất. Vui lòng thử lại.';}
-async function call(data){api??=import('https://www.gstatic.com/firebasejs/10.12.5/firebase-functions.js').then(m=>m.httpsCallable(m.getFunctions(account.auth.app,'us-central1'),'adminPanel'));return (await (await api)(data)).data;}
+function explain(error){if(error.code==='permission-denied')return 'Firestore chưa cho phép thao tác. Chủ dự án cần Publish bản firestore.rules mới; nếu đã Publish, hãy kiểm tra tài khoản và mở khóa lại.';if(['unavailable','failed-precondition'].includes(error.code))return 'Không thể kết nối Firestore. Kiểm tra mạng và thử lại.';return error.message||'Không thể hoàn tất. Vui lòng thử lại.';}
+async function call(data){if(data.action==='unlock')return store.unlock(data.code);if(data.action==='lookup')return store.lookup(data.email);if(data.action==='setStars')return store.setStars(data);if(data.action==='lock')return store.lock(data.sessionToken);}
 function lockView(message='Đã khóa khu vực quản trị.'){session=null;target=null;pending=null;clearTimeout(timer);$('admin-tools').hidden=true;$('admin-target').hidden=true;$('admin-unlock-form').hidden=false;$('admin-code').value='';status(message);}
 $('admin-check').addEventListener('click',()=>run(async guard=>{
- const result=await account.user.getIdTokenResult(true);guard();
- if(result.claims.admin!==true){reset();status('Tài khoản này chưa có quyền admin. Chủ nền tảng cần cấp quyền trước khi mở khóa.');return;}
+ await store.check();guard();
  lockView('Đã xác nhận quyền admin. Nhập mã để mở khóa trong 15 phút.');$('admin-code').focus();
 }));
 $('admin-unlock-form').addEventListener('submit',event=>{event.preventDefault();run(async guard=>{
@@ -34,7 +35,7 @@ $('admin-stars-form').addEventListener('submit',event=>{event.preventDefault();r
  if(!Number.isInteger(stars)||stars<0||stars>1_000_000||reason.length<3)throw Error('Nhập số sao nguyên hợp lệ và lý do ít nhất 3 ký tự.');
  const signature=JSON.stringify([target.uid,target.stars,stars,reason]);
  if(pending?.signature!==signature)pending={signature,requestId:crypto.randomUUID()};
- const result=await call({action:'setStars',sessionToken:session.sessionToken,uid:target.uid,expectedStars:target.stars,stars,reason,requestId:pending.requestId});guard();
+ const result=await call({action:'setStars',sessionToken:session.sessionToken,uid:target.uid,email:target.email,expectedStars:target.stars,stars,reason,requestId:pending.requestId});guard();
  target.stars=result.stars;pending=null;$('admin-current-stars').textContent=String(result.stars);preview();
  status(`Đã lưu ${result.stars} sao cho ${target.email}. Thay đổi đã được ghi nhật ký.`);
 });});

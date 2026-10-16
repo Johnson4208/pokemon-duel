@@ -13,12 +13,22 @@ export class Account extends EventTarget {
     if(!user){this.ready=true;this.emit();return;}
     try{
      const ref=db.doc(this.db,'learners',user.uid);
-     await db.runTransaction(this.db,async tx=>{const snap=await tx.get(ref);if(!snap.exists())tx.set(ref,freshProfile(user.displayName||'Sunny'));});
+     await this.ensureProfile(user);
      if(epoch!==this.epoch)return;
      this.unsubscribe=db.onSnapshot(ref,snap=>{if(epoch!==this.epoch)return;this.profile=snap.data();this.ready=true;this.emit();},error=>this.fail(error));
     }catch(error){if(epoch===this.epoch)this.fail(error);}
    });
   }catch(error){this.ready=true;this.fail(error);}
+ }
+ async ensureProfile(user){
+  const api=this.dbApi,ref=api.doc(this.db,'learners',user.uid),email=String(user.email||'').trim().toLowerCase();
+  this.emailSyncPending=false;
+  try{await api.runTransaction(this.db,async tx=>{const snap=await tx.get(ref);if(!snap.exists())tx.set(ref,{...freshProfile(user.displayName||'Sunny'),...(email?{email}:{})});else if(email&&snap.data().email!==email)tx.update(ref,{email});});}
+  catch(error){
+   // Keep ordinary learning available while the owner publishes the new rules.
+   if(error.code!=='permission-denied')throw error;
+   await api.runTransaction(this.db,async tx=>{const snap=await tx.get(ref);if(!snap.exists())tx.set(ref,freshProfile(user.displayName||'Sunny'));});this.emailSyncPending=true;
+  }
  }
  fail(error){this.error=error?.code==='permission-denied'?'Account data is unavailable. Ask the app owner to publish the Firestore rules.':error?.message||'Could not connect. Please try again.';this.dispatchEvent(new Event('error'));}
  async login(email,password){if(!this.auth)throw Error('Cloud login is waiting for the app owner to connect Firebase.');return this.authApi.signInWithEmailAndPassword(this.auth,email,password);}
@@ -38,3 +48,4 @@ export class Account extends EventTarget {
  }
 }
 export const account=new Account();window.LinguaAccount=account;
+
