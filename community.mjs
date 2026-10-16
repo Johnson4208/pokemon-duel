@@ -67,6 +67,6 @@ function refresh(){const p=account.profile;$('learning-shell').hidden=!p;$('logi
  $('account-status').textContent=account.guest?'Guest demo · progress stays in this browser session.':`${account.user.email} · Stars and Pokémon sync with this account.`;localize(p.uiLanguage);
 }
 account.addEventListener('change',refresh);account.addEventListener('error',()=>{$('auth-message').textContent=account.error;$('profile-feedback').textContent=account.error;});
-const script=document.createElement('script');script.src='app.js?v=curriculum-v1';script.onload=()=>{appLoaded=true;refresh();};script.onerror=()=>{$('auth-message').textContent='The learning app did not load. Please refresh.';};document.body.append(script);
+const script=document.createElement('script');script.src='app.js?v=exam-overlay-v1';script.onload=()=>{appLoaded=true;refresh();};script.onerror=()=>{$('auth-message').textContent='The learning app did not load. Please refresh.';};document.body.append(script);
 await account.init();refresh();
 

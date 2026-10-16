@@ -18,7 +18,7 @@ Toàn bộ giải thích, ví dụ, đoạn đọc và bài tập mới trong ap
 
 ## Tạo bài kiểm tra
 
-Nút ＋ nằm trên topbar, sidebar và menu More của điện thoại. Có thể chọn từ thư viện hiện có hoặc chọn nhiều bài giảng; từ trùng được gộp, đồng thời vẫn giữ liên hệ với các bài. Bộ từ được chụp lại trong bài kiểm tra để lần làm sau không phụ thuộc thay đổi danh mục.
+Nút ＋ chỉ nằm trên topbar; mở hộp thoại lớp phủ trên trang hiện tại, có ghi chú hướng dẫn. Không có mục tạo bài kiểm tra trong sidebar hoặc menu More. Đóng bằng nút Đóng hoặc Escape để trở lại trang trước; nội dung đang nhập được giữ khi chỉ đóng lớp phủ. Có thể chọn từ thư viện hiện có hoặc chọn nhiều bài giảng; từ trùng được gộp, đồng thời vẫn giữ liên hệ với các bài. Bộ từ được chụp lại trong bài kiểm tra để lần làm sau không phụ thuộc thay đổi danh mục.
 
 - Điền nghĩa: tiếng Việt → tiếng Anh; tiếng Trung → tiếng Việt hoặc tiếng Anh. Khi chọn nghĩa tiếng Việt chỉ hiện từ có bản dịch đã biên soạn.
 - Tráo chữ tiếng Việt: các ký tự được xáo lại, ký hiệu ␣ thể hiện khoảng trắng. Người học gõ lại đúng từ/cụm từ có dấu.

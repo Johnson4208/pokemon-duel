@@ -240,7 +240,8 @@
   }
 
   function changeView(name) {
-    const validViews = ['today', 'learn', 'play', 'stories', 'progress', 'shop', 'profile', 'curriculum', 'exams'];
+    if(name==='exams'){document.dispatchEvent(new CustomEvent('lingua:open-exams'));return;}
+    const validViews = ['today', 'learn', 'play', 'stories', 'progress', 'shop', 'profile', 'curriculum'];
     if (!validViews.includes(name)) name = 'today';
     $$('.view').forEach(view => view.classList.toggle('active', view.id === `view-${name}`));
     $$('.nav-link').forEach(button => button.classList.toggle('active', button.dataset.view === name));

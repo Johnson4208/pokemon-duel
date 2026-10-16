@@ -37,7 +37,10 @@ function runTest(test){activeTest=test;submitted=false;$('exam-builder').hidden=
 }
 function exitTest(){if(activeTest&&!submitted){const form=$('exam-answer-form');if(form&&[...form.querySelectorAll('input,textarea')].some(el=>el.value.trim())&&!window.confirm('Rời bài kiểm tra? Các câu trả lời chưa nộp sẽ không được lưu.'))return;}activeTest=null;$('exam-builder').hidden=false;$('exam-runner').hidden=true;renderSaved();}
 function download(value,filename){const blob=new Blob([JSON.stringify(value,null,2)],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-function pickCourse(id){const l=LESSONS.find(x=>x.id===id);if(!l)return;setLanguage(l.language);[...$('exam-lessons').options].forEach(o=>o.selected=o.value===id);selectLessons([id]);window.LinguaApp?.show('exams');focus('exam-name');}
+function openExamLayer(){if(!account.profile)return;if(!pool.length)setLanguage(language);renderSaved();const layer=$('view-exams');if(!layer.open)layer.showModal();}
+$('exam-overlay-close').onclick=()=>$('view-exams').close();
+document.addEventListener('lingua:open-exams',openExamLayer);
+function pickCourse(id){const l=LESSONS.find(x=>x.id===id);if(!l)return;setLanguage(l.language);[...$('exam-lessons').options].forEach(o=>o.selected=o.value===id);selectLessons([id]);openExamLayer();focus('exam-name');}
 $('course-language').onchange=()=>{closeLesson();renderCourses();};$('course-stage').onchange=()=>{closeLesson();renderCourses();};
 $('exam-language').onchange=()=>setLanguage($('exam-language').value);
 $('exam-answer-language').onchange=()=>{const valid=new Set(available().map(w=>w.id));selected=new Set([...selected].filter(id=>valid.has(id)));renderWords();};
@@ -50,6 +53,7 @@ $('exam-writing').onchange=()=>{$('writing-settings').hidden=!$('exam-writing').
 $('exam-config').onsubmit=e=>{e.preventDefault();$('exam-feedback').textContent='';try{if($('exam-writing').checked&&!$('exam-topic').value.trim())throw Error('Hãy nhập chủ đề cho phần viết.');const types=[$('exam-meaning').checked?'meaning':null,$('exam-scramble').checked?'scramble':null].filter(Boolean);const test=buildTest({language,words:pool.filter(w=>selected.has(w.id)),types,count:Number($('exam-count').value),title:$('exam-name').value,writing:$('exam-writing').checked?$('exam-topic').value:'',answerLanguage:$('exam-answer-language').value});saveTest(test);runTest(test);}catch(error){$('exam-feedback').textContent=error.message;}};
 $('exam-import').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>2_000_000)throw Error('File quá lớn (tối đa 2 MB).');const test=validateTest(JSON.parse(await file.text()));saveTest(test);$('exam-import-status').textContent='Đã nhập bài kiểm tra. Chọn “Làm bài” bên dưới.';}catch(error){$('exam-import-status').textContent=error instanceof SyntaxError?'File không phải JSON hợp lệ.':error.message;}finally{e.target.value='';}};
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.hasAttribute('data-open-exams'))openExamLayer();
  if(b.dataset.openLesson)showLesson(b.dataset.openLesson);
  if(b.hasAttribute('data-course-back'))closeLesson();
  if(b.dataset.courseTest)pickCourse(b.dataset.courseTest);
@@ -62,9 +66,9 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
  if(b.hasAttribute('data-export-result')&&activeTest)download({test:activeTest,result:saved.results[activeTest.id]},'little-lingua-result.json');
  if(b.dataset.removeTest&&window.confirm('Xóa bài kiểm tra và kết quả đã lưu trong trình duyệt này?')){saved.tests=saved.tests.filter(t=>t.id!==b.dataset.removeTest);delete saved.results[b.dataset.removeTest];persist();renderSaved();}
 });
-function refreshAccount(){const next=account.profile?(account.user?.uid||'guest'):null;if(next!==identity){identity=next;load();activeTest=null;submitted=false;activeLesson=null;$('exam-runner').innerHTML='';$('exam-builder').hidden=false;$('exam-runner').hidden=true;closeLesson();$('exam-feedback').textContent='';$('exam-name').value='Bài ôn tập của tôi';$('exam-topic').value='';$('exam-writing').checked=false;$('writing-settings').hidden=true;$('exam-import-status').textContent='';seenLanguage=null;}
+function refreshAccount(){const next=account.profile?(account.user?.uid||'guest'):null;if(next!==identity){if($('view-exams').open)$('view-exams').close();identity=next;load();activeTest=null;submitted=false;activeLesson=null;$('exam-runner').innerHTML='';$('exam-builder').hidden=false;$('exam-runner').hidden=true;closeLesson();$('exam-feedback').textContent='';$('exam-name').value='Bài ôn tập của tôi';$('exam-topic').value='';$('exam-writing').checked=false;$('writing-settings').hidden=true;$('exam-import-status').textContent='';seenLanguage=null;}
  const nextLanguage=account.profile?.language;if(nextLanguage!==seenLanguage){seenLanguage=nextLanguage;const l=nextLanguage==='zh'?'zh':'vi';$('course-language').value=l;closeLesson();setLanguage(l);}renderCourses();renderSaved();}
 account.addEventListener('change',refreshAccount);
-document.addEventListener('lingua:view',e=>{if(e.detail==='curriculum')renderCourses();if(e.detail==='exams'){if(!pool.length)setLanguage(language);renderSaved();}});
+document.addEventListener('lingua:view',e=>{if(e.detail==='curriculum')renderCourses();});
 window.addEventListener('beforeunload',e=>{if(activeTest&&!submitted&&document.querySelector('#exam-answer-form input, #exam-answer-form textarea')&&[...document.querySelectorAll('#exam-answer-form input,#exam-answer-form textarea')].some(el=>el.value.trim())){e.preventDefault();e.returnValue='';}});
 renderSources();refreshAccount();
