@@ -4,7 +4,7 @@ import {LESSONS,GLOSSES_VI,vocabularyPool,buildTest,gradeQuestions,validateTest,
 test('courses have complete sequential units, vocabulary, grammar exercises and valid prerequisites',()=>{
  for(const lang of ['vi','zh']){
   const units=LESSONS.filter(l=>l.language===lang);assert.equal(units.length,12);
-  units.forEach((l,i)=>{assert.equal(l.order,i+1);assert.equal(l.prerequisite,i?units[i-1].id:null);assert.equal(l.words.length,6);assert.equal(l.grammar.length,2);assert.ok(l.reading&&l.translation&&l.goal&&l.writing);for(const g of l.grammar)for(const field of ['pattern','note','example','meaning','question','answer'])assert.ok(g[field]);if(lang==='zh')for(const w of l.words){assert.ok(w.pinyin);assert.ok(GLOSSES_VI[w.meaning],w.meaning);}});
+  units.forEach((l,i)=>{assert.equal(l.order,i+1);assert.equal(l.prerequisite,i?units[i-1].id:null);assert.ok(l.words.length>=(lang==='vi'?7:6));assert.equal(l.grammar.length,lang==='vi'?4:2);assert.equal(new Set(l.words.map(w=>w.term)).size,l.words.length);assert.ok(l.reading&&l.translation&&l.goal&&l.writing);for(const g of l.grammar)for(const field of ['pattern','note','example','meaning','question','answer'])assert.ok(g[field]);if(lang==='zh')for(const w of l.words){assert.ok(w.pinyin);assert.ok(GLOSSES_VI[w.meaning],w.meaning);}});
  }
 });
 test('lesson selection reuses existing word identity and links repeated words to all relevant lessons',()=>{
@@ -28,3 +28,6 @@ test('import validates bounded test content and strips unrelated fields',()=>{
  const t=buildTest({language:'zh',words:[{id:'1',vi:'我',en:'I'}],count:1,types:['meaning']});assert.equal(validateTest({...t,admin:true}).admin,undefined);
  assert.throws(()=>validateTest({...t,questions:Array(101).fill(t.questions[0])}));assert.throws(()=>validateTest({...t,questions:[{...t.questions[0],type:'scramble'}]}));assert.throws(()=>validateTest({...t,questions:[],writing:''}));assert.throws(()=>validateTest({...t,questions:[{...t.questions[0],word:{vi:123,en:'I'}}]}));
 });
+
+import {CONNECTOR_GUIDE,VI_LESSON_UPGRADES} from './vietnamese-grammar.mjs';
+test('connector guide and paragraph workshops are linked to existing lessons with usable answer explanations',()=>{assert.equal(CONNECTOR_GUIDE.length,10);assert.equal(Object.keys(VI_LESSON_UPGRADES).length,12);for(const group of CONNECTOR_GUIDE){assert.ok(group.forms.length>=3);assert.ok(group.answers.length&&group.explanation&&group.exercise&&group.reason);for(const id of group.lessons)assert.ok(LESSONS.some(l=>l.id===id));}for(const l of LESSONS.filter(l=>l.language==='vi')){assert.ok(l.workshop.before!==l.workshop.after);assert.ok(l.workshop.reason&&l.workshop.task);}});

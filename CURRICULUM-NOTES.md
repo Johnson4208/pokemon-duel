@@ -4,7 +4,7 @@
 
 24 bài: 12 tiếng Việt, 12 tiếng Trung. Mỗi ngôn ngữ có bốn chặng nội bộ (Khởi đầu, Sơ cấp, Trung cấp, Nâng cao), mỗi chặng ba bài. Đây là chuỗi bài định hướng từ nền tảng đến một số cấu trúc nâng cao; không tuyên bố bao phủ trọn trình độ CEFR, HSK hay chứng chỉ năng lực tiếng Việt.
 
-Mỗi bài có mục tiêu có thể thực hiện, bài nên học trước, 6 mục từ trọng tâm, 2 điểm ngữ pháp với giải thích và ví dụ, đoạn đọc nguyên tác kèm bản dịch, 2 bài điền cấu trúc với đáp án giải thích, nhiệm vụ viết và gợi ý ôn lại. Tiếng Trung có pinyin cho từ trọng tâm và nghĩa tiếng Việt. Phần giải thích hiện bằng tiếng Việt, ví dụ kèm bản dịch tiếng Anh.
+Mỗi bài có mục tiêu có thể thực hiện, bài nên học trước, 6–8 mục từ trọng tâm, 4 điểm ngữ pháp tiếng Việt hoặc 2 điểm ngữ pháp tiếng Trung với giải thích và ví dụ, đoạn đọc nguyên tác kèm bản dịch, 2–4 bài điền cấu trúc với đáp án giải thích, nhiệm vụ viết và gợi ý ôn lại. Tiếng Trung có pinyin cho từ trọng tâm và nghĩa tiếng Việt. Phần giải thích hiện bằng tiếng Việt, ví dụ kèm bản dịch tiếng Anh.
 
 ## Cơ sở tham khảo (tra cứu 16/10/2026, Asia/Shanghai)
 
@@ -37,3 +37,13 @@ Dữ liệu hiển thị được escape; file nhập giới hạn kích thướ
 - 47/47 kiểm thử Node hiện có và mới đều qua.
 - Chromium: luồng khách → giáo trình → chọn bài → tạo kiểm tra → nộp và xem kết quả chạy ở 1440 px, 390 px, 320 px; không có lỗi JavaScript hay tràn ngang ở màn hình kiểm tra.
 - Đối chiếu nghĩa tiếng Việt cho tiếng Trung, tráo chữ tiếng Việt, lưu bài viết và điểm phần tự động đã được kiểm tra; các kiểm tra này không thay thế thử nghiệm đăng nhập trên thiết bị vật lý.
+
+## Nâng cấp liên kết tiếng Việt (16/10/2026)
+
+12 bài tiếng Việt có thêm 24 điểm ngữ pháp (tổng 48 điểm tiếng Việt), từ nối đưa vào bộ từ theo bài để chọn kiểm tra. Mỗi bài thêm đoạn trước/sau biên tập, lý do sửa và yêu cầu viết vận dụng. Sổ tay trong trang Giáo trình có 10 nhóm chức năng, tìm kiếm, ví dụ, lỗi theo ý định giao tiếp, cách sửa và bài luyện kèm giải thích. Sổ tay chỉ hiện khi chọn giáo trình tiếng Việt.
+
+Các phân biệt được nhấn mạnh: quan hệ nội dung trước hình thức nối; trình tự khác nguyên nhân; điều kiện cần khác giả thiết; diễn giải lại khác mở phương diện; thực tế nhượng bộ khác giả định; tổng kết không mở luận điểm mới. Không khẳng định mọi từ nối thuộc một từ loại hay dấu phẩy luôn bắt buộc.
+
+Nguồn đối chiếu bổ sung: Nguyễn Hoàng Phương, “Chức năng của giới từ tiếng Việt (xét trên bình diện ngữ pháp và ngữ nghĩa)”, https://journal.hcmue.edu.vn/index.php/hcmuejos/article/view/1213 — đọc tóm tắt về khác biệt giới từ/liên từ và sự gộp chung quan hệ từ. Nguồn này hỗ trợ cách trình bày thuật ngữ, không được coi là xác nhận riêng từng ví dụ của app. Đã đối chiếu thêm phần chỉ mục của bài về liên kết văn bản https://www.vjol.info.vn/index.php/tctbgd/article/download/103665/87397/ ; toàn văn trả lỗi 502 trong phiên này. Không sử dụng các trang SEO mang tên vjol.info làm nguồn học thuật.
+
+Mọi ví dụ và đoạn trước/sau đều được biên soạn riêng. Các bài luyện ở sổ tay là tự học có gợi ý, chưa thêm dạng đề ngữ pháp vào công cụ tạo bài kiểm tra.

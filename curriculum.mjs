@@ -1,3 +1,4 @@
+import {VI_LESSON_UPGRADES} from './vietnamese-grammar.mjs?v=vi-connectors-v1';
 // Original teaching units. Stages are internal learning guidance, not certified exam equivalences.
 export const LESSONS = [
   {
@@ -1514,7 +1515,9 @@ export const LESSONS = [
   }
 ];
 
+for(const lesson of LESSONS){const upgrade=VI_LESSON_UPGRADES[lesson.id];if(!upgrade)continue;lesson.grammar.push(...upgrade.grammar);const seen=new Set(lesson.words.map(w=>w.term));for(const word of upgrade.words)if(!seen.has(word.term)){lesson.words.push(word);seen.add(word.term);}lesson.workshop=upgrade.workshop;lesson.minutes+=10;lesson.writing+=' Yêu cầu liên kết: '+upgrade.workshop.task;}
 export const SOURCES = [
+ {title:'Tạp chí Khoa học ĐHSP TP.HCM — chức năng giới từ và phân biệt liên từ',url:'https://journal.hcmue.edu.vn/index.php/hcmuejos/article/view/1213',note:'Đối chiếu sự khác biệt giữa chức năng liên kết và cách phân loại từ. Sổ tay dùng “từ nối” theo chức năng, không coi mọi mục là cùng một từ loại.'},
  {title:'MIT OpenCourseWare — Learning Chinese: A Foundation Course in Mandarin',url:'https://www.ocw.mit.edu/courses/res-21g-003-learning-chinese-a-foundation-course-in-mandarin-spring-2011/pages/online-textbook/part-ii-units-5-7-character-lessons-4-6/',note:'Đối chiếu lộ trình từ phát âm, bổ ngữ 得, trải nghiệm 过 đến liên kết câu. Ví dụ và bài đọc trong app được biên soạn riêng.'},
  {title:'Khung năng lực tiếng Việt dùng cho người nước ngoài (Bộ GD&ĐT)',url:'https://vbpl.vn/TW/Pages/vbpq-toanvan.aspx?ItemID=128668',note:'Tham khảo tiến trình năng lực giao tiếp; bài học do Little Lingua biên soạn, không phải toàn bộ chương trình chứng chỉ.'},
  {title:'Chinese Tests Service — syllabus and grammar',url:'https://www.chinesetest.cn/syllabus',note:'Tham khảo cách kết hợp nhiệm vụ, chủ đề, từ vựng và ngữ pháp; không gán tương đương HSK cho các chặng nội bộ.'},
