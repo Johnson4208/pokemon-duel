@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=shop-voucher-v1" /><link rel="stylesheet" href="community.css?v=shop-voucher-v1" />
+  <link rel="stylesheet" href="styles.css?v=admin-v1" /><link rel="stylesheet" href="community.css?v=shop-voucher-v1" />
   <link rel="stylesheet" href="learning-studio.css?v=vi-connectors-v1">
 </head>
 <body>
@@ -51,7 +51,7 @@
           <strong>big adventures!</strong>
           <p>Every word helps you grow.</p>
         </div>
-        <button class="quiet-button" id="grownup-button"><span aria-hidden="true">⚙</span> Grown-up corner</button>
+        <button class="quiet-button" id="grownup-button"><span aria-hidden="true">⚙</span> Settings</button>
         <p class="sidebar-footnote">Made for curious minds <span>♥</span></p>
       </div>
     </aside>
@@ -222,7 +222,7 @@
       <nav aria-label="More sections"><button class="nav-link" data-view="curriculum"><span class="nav-icon">▤</span><span>Giáo trình</span></button><button class="nav-link" data-view="stories"><span class="nav-icon">▤</span><span>Story garden</span></button>
         <button class="nav-link" data-view="progress"><span class="nav-icon">↗</span><span>My progress</span></button>
         <button class="nav-link" data-view="profile"><span class="nav-icon">🐾</span><span>My profile</span></button>
-        <button class="mobile-grownup-link" type="button" id="mobile-grownup-button"><span class="nav-icon">⚙</span><span>Grown-up corner</span></button>
+        <button class="mobile-grownup-link" type="button" id="mobile-grownup-button"><span class="nav-icon">⚙</span><span>Settings</span></button>
       </nav>
     </dialog>
     <nav class="mobile-bottom-nav" aria-label="Main navigation">
@@ -237,13 +237,31 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div class="modal-backdrop" id="modal-backdrop" hidden>
     <section class="grownup-modal" role="dialog" aria-modal="true" aria-labelledby="grownup-title">
-      <button class="modal-close" id="modal-close" aria-label="Close grown-up corner">×</button>
-      <div class="modal-icon">🧡</div><p class="eyebrow small-eyebrow">A NOTE FOR GROWN-UPS</p><h2 id="grownup-title">Learning should feel safe.</h2><p>This starter app runs in your browser. Learners can sign in with email and password. Each account has its own cloud progress and Pokémon collection. Guest demo progress stays in this browser session. There is no chat.</p><div class="grownup-settings"><label for="learner-name">Learner’s nickname</label><input id="learner-name" type="text" maxlength="20" placeholder="e.g. Sunny" /><label for="daily-goal">Daily practice goal</label><select id="daily-goal"><option value="5">5 minutes</option><option value="10" selected>10 minutes</option><option value="15">15 minutes</option></select><p class="settings-hint">Adult settings are a prototype, not a parental-lock feature.</p></div><button class="button button-primary button-full" id="save-settings">Save settings</button>
+      <button class="modal-close" id="modal-close" aria-label="Close settings">×</button>
+      <div class="modal-icon">🧡</div><p class="eyebrow small-eyebrow">A NOTE FOR GROWN-UPS</p><h2 id="grownup-title">Settings / Cài đặt</h2><p>This starter app runs in your browser. Learners can sign in with email and password. Each account has its own cloud progress and Pokémon collection. Guest demo progress stays in this browser session. There is no chat.</p><div class="grownup-settings"><label for="learner-name">Learner’s nickname</label><input id="learner-name" type="text" maxlength="20" placeholder="e.g. Sunny" /><label for="daily-goal">Daily practice goal</label><select id="daily-goal"><option value="5">5 minutes</option><option value="10" selected>10 minutes</option><option value="15">15 minutes</option></select><p class="settings-hint">Adult settings are a prototype, not a parental-lock feature.</p></div><button class="button button-primary button-full" id="save-settings">Save settings</button>
+      <section id="admin-settings" class="admin-settings" lang="vi" aria-labelledby="admin-title">
+        <h3 id="admin-title">⚙ Quản trị tài khoản</h3>
+        <p>Chỉ tài khoản được cấp quyền admin mới có thể mở khóa và điều chỉnh số sao.</p>
+        <button id="admin-check" class="button button-soft" type="button">Kiểm tra quyền admin</button>
+        <p id="admin-status" role="status" aria-live="polite"></p>
+        <form id="admin-unlock-form" hidden>
+          <label for="admin-code">Mã mở khóa quản trị</label><input id="admin-code" type="password" maxlength="100" autocomplete="off" required>
+          <button class="button button-primary" type="submit">Mở khóa</button>
+        </form>
+        <div id="admin-tools" hidden>
+          <div class="admin-session"><span>Phiên quản trị: tối đa 15 phút</span><button id="admin-lock" type="button" class="button button-soft">Khóa lại</button></div>
+          <form id="admin-lookup-form"><label for="admin-email">Email đã đăng ký của người dùng</label><input id="admin-email" type="email" maxlength="254" autocomplete="off" required><button type="submit" class="button button-soft">Tìm người dùng</button></form>
+          <div id="admin-target" hidden>
+            <p><strong id="admin-target-name"></strong><br><span id="admin-target-email"></span><br>Số sao hiện tại: <strong id="admin-current-stars"></strong> ⭐</p>
+            <form id="admin-stars-form"><label for="admin-stars">Số sao mới (0–1.000.000)</label><input id="admin-stars" type="number" min="0" max="1000000" step="1" required><label for="admin-reason">Lý do thay đổi</label><textarea id="admin-reason" minlength="3" maxlength="300" rows="2" required></textarea><p id="admin-change-preview" aria-live="polite"></p><button type="submit" class="button button-primary">Lưu số sao mới</button></form>
+          </div>
+        </div>
+      </section>
     </section>
   </div>
   <script type="module" src="learning-studio.mjs?v=vi-connectors-v1"></script>
   <script src="vietnamese-vocab.js"></script>
-  <script src="languages.js"></script><script src="firebase-config.js"></script><script type="module" src="community.mjs?v=vi-connectors-v1"></script>
+  <script src="languages.js"></script><script src="firebase-config.js"></script><script type="module" src="community.mjs?v=admin-v1"></script>
 <dialog id="exchange-dialog" class="exchange-dialog"><img id="exchange-image" alt="Pokémon reward"><span id="exchange-voucher-icon" class="exchange-voucher-icon" aria-hidden="true" hidden>🎟️</span><h2><span id="exchange-heading">Invite</span> <span id="exchange-name"></span>?</h2><p id="exchange-copy"></p><p id="exchange-feedback" role="status"></p><div class="exchange-actions"><button id="exchange-cancel" class="button button-soft">Keep my stars</button><button id="exchange-confirm" class="button button-primary">Exchange &amp; reset to 0 ⭐</button></div></dialog><dialog id="effects-preview-dialog" aria-labelledby="effects-preview-title" style="width:min(1200px,94vw);height:90dvh;max-height:90dvh;padding:0;border:1px solid #d8decf;border-radius:18px;background:#f8f7ef;overflow:hidden">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-bottom:1px solid #d8decf"><h2 id="effects-preview-title" style="margin:0;font-size:18px">Pokémon move effects</h2><button class="button button-soft" id="close-effects-preview" autofocus>✕ Back to Little Lingua</button></div>
 <iframe id="effects-preview-frame" title="All Pokémon move effects preview" style="display:block;width:100%;height:calc(100% - 72px);border:0"></iframe></dialog>
@@ -268,6 +286,7 @@ window.addEventListener('message',event=>{if(event.origin!==location.origin||eve
  </form><section class="panel-card studio-saved"><h2>Bài kiểm tra đã tạo</h2><p class="studio-note">Bài đã tạo, kết quả gần nhất và dấu hoàn thành bài học được lưu riêng theo tài khoản trong trình duyệt này. Tải file bài kiểm tra để dùng trên thiết bị khác; các mục này chưa đồng bộ đám mây.</p><label class="button button-soft" for="exam-import">Nhập file bài kiểm tra</label><input id="exam-import" type="file" accept="application/json,.json" hidden><p id="exam-import-status" role="status"></p><div id="exam-saved-list"></div></section></div>
  <section id="exam-runner" class="panel-card" hidden tabindex="-1"></section>
 </dialog>
+<script type="module" src="admin-panel.mjs?v=admin-v1"></script>
 </body>
 </html>
 

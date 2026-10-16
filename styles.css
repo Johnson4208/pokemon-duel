@@ -329,3 +329,14 @@ h1,h2,h3,.brand-name{font-family:'Fredoka','Nunito',system-ui,sans-serif;letter-
 button,input,select,textarea{font:inherit;line-height:1.35}
 button{min-height:40px}img{max-width:100%}
 [hidden]{display:none!important}
+
+
+/* Settings and administrator controls fit phone and desktop viewports. */
+.grownup-modal{max-height:calc(100dvh - 36px);overflow-y:auto;overscroll-behavior:contain}
+.admin-settings{border-top:1px solid #e4e7ef;margin-top:24px;padding-top:18px;color:#4f5973;text-align:left}
+.admin-settings h3{font-size:18px;margin:0 0 10px}.admin-settings p{font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.admin-settings form{display:grid;gap:10px;margin:14px 0}.admin-settings label{font-size:13px;font-weight:700}
+.admin-settings input,.admin-settings textarea{box-sizing:border-box;width:100%;min-width:0;padding:11px;border:1px solid #cbd2df;border-radius:10px;font:inherit;color:#35405a;background:#fff}
+.admin-settings [hidden]{display:none!important}.admin-session{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:12px}
+#admin-target{border:1px solid #dbe4db;background:#f5f9f3;border-radius:12px;padding:14px;margin-top:12px}
+#admin-status{min-height:2em}#admin-change-preview{font-weight:700}.admin-settings button:disabled{opacity:.6;cursor:wait}
