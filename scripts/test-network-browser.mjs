@@ -4,6 +4,7 @@ import chromiumBinary from '@sparticuz/chromium';
 import {spawn} from 'node:child_process';
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
+import {existsSync} from 'node:fs';
 import path from 'node:path';
 import {networkInterfaces} from 'node:os';
 let networkAvailable;try{networkAvailable=Object.values(networkInterfaces()).flat().some(address=>address&&!address.internal);}catch(error){if(process.env.CI)throw error;networkAvailable=false;}
@@ -26,7 +27,8 @@ try{
   res.end(content);
  }catch{res.writeHead(404).end();}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const base='http://127.0.0.1:'+server.address().port;
- browser=await chromium.launch({executablePath:await chromiumBinary.executablePath(),args:[...chromiumBinary.args.filter(arg=>arg!=='--single-process'),'--no-sandbox','--disable-features=WebRtcHideLocalIpsWithMdns','--allow-loopback-in-peer-connection'],headless:true});const errors=[];
+ const systemChrome=['/usr/bin/google-chrome','/usr/bin/chromium'].find(existsSync);
+ browser=await chromium.launch({executablePath:systemChrome||await chromiumBinary.executablePath(),args:systemChrome?['--no-sandbox','--disable-dev-shm-usage','--disable-features=WebRtcHideLocalIpsWithMdns']:[...chromiumBinary.args.filter(arg=>arg!=='--single-process'),'--no-sandbox','--disable-features=WebRtcHideLocalIpsWithMdns','--allow-loopback-in-peer-connection'],headless:true});const errors=[];
  const a=await browser.newContext({viewport:{width:1440,height:1100}}),b=await browser.newContext({viewport:{width:1440,height:1100}});first=await a.newPage();second=await b.newPage();for(const page of [first,second])page.on('pageerror',error=>errors.push(error.message));
  await first.goto(base+'/test-room?name=Host');await second.goto(base+'/test-room?name=Guest');const host=first.frameLocator('iframe'),guest=second.frameLocator('iframe');
  await host.locator('#create-room').click();await host.locator('#network-status').filter({hasText:'Room open'}).waitFor({timeout:15000});const code=await host.locator('#room-display').textContent();await guest.locator('#room-code').fill(code);await guest.locator('#join-room').click();

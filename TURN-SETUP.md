@@ -4,7 +4,7 @@ The website now tries multiple connection paths automatically. It does not guess
 
 ## What the website does
 
-- Starts with normal ICE negotiation: direct candidates plus every configured relay transport.
+- Starts with normal ICE negotiation: direct candidates plus every configured relay transport. Keeps configured STUN discovery when private TURN access is loaded so unrestricted networks can still negotiate a direct route.
 - On failure, retries the same room/player session, forcing relay candidates on attempt 2 and restricting to configured TCP/TLS relay URLs on attempt 3. If no TCP/TLS URL exists, it repeats relay mode; it does not invent a TLS service.
 - Allows up to 3 attempts by default, with 25 seconds for a player handshake per attempt and short increasing backoff. These limits can be changed in `config.js` within bounded ranges.
 - Keeps the host's room open after a failed player handshake. Disconnecting pauses actions; reconnecting preserves the room code, player token and host's battle revision.
