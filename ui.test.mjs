@@ -31,7 +31,7 @@ test('app initialization, selection, practice through result, rematch and exit',
  el('rematch').click();assert.equal(el('result-dialog').open,false);assert.equal(el('battle').hidden,false);
  el('exit-battle').click();assert.equal(el('confirm-dialog').open,true);el('confirm-leave').click();assert.equal(el('battle').hidden,true);assert.equal(el('lobby').hidden,false);assert.equal(el('confirm-dialog').open,false);
 });
-test('invalid room code and unavailable connection library show readable feedback',()=>{el('room-code').value='BAD';el('join-room').click();assert.match(el('toast').textContent,/8 ký tự/);el('create-room').click();assert.equal(el('network-error').hidden,false);assert.match(el('network-error').textContent,/Thư viện/);});
+test('invalid room code and unavailable connection library show readable feedback',()=>{el('room-code').value='BAD';el('join-room').click();assert.match(el('toast').textContent,/8-character/);el('create-room').click();assert.equal(el('network-error').hidden,false);assert.match(el('network-error').textContent,/connection library/);});
 
 test('return to Lingua closes the embedded battle without navigating inside the frame',()=>{
  let closed=0;window.parent.document={getElementById:id=>id==='close-duel'?{click(){closed++;}}:null};
@@ -52,3 +52,4 @@ test('Pokémon preview exposes search, role filters, selectable cards, and clear
  const preview=await readFile(new URL('./pixel-effects-preview.html',import.meta.url),'utf8');
  for(const required of ['id="pokemon-search"','id="role-filters"','id="pokemon-list"','aria-pressed','id="play-all"','data-preview','previewSpriteFallback','max-width:560px'])assert.ok(preview.includes(required),`Missing preview UI affordance: ${required}`);
 });
+
