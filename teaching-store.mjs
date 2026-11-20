@@ -3,7 +3,7 @@ export const MAX_PAGES=500;
 export function fileKind(file){const name=String(file.name||'').toLowerCase();if(name.endsWith('.pdf'))return 'pdf';if(name.endsWith('.pptx'))return 'pptx';throw Error('Chỉ hỗ trợ PDF và PowerPoint .pptx. Hãy lưu file .ppt cũ thành .pptx trước.');}
 export function validateFile(file){const kind=fileKind(file);if(!file.size)throw Error('File trống, không thể trình chiếu.');if(file.size>MAX_FILE_SIZE)throw Error('File vượt giới hạn 80 MB. Hãy chia nhỏ tài liệu trước khi mở.');return kind;}
 export function validPage(index,count){return Math.max(0,Math.min(count-1,Math.trunc(Number(index)||0)));}
-export function sizeLabel(bytes){return bytes>=1048576?(bytes/1048576).toFixed(1)+' MB':Math.max(1,Math.round(bytes/1024))+' KB';}
+export function sizeLabel(bytes){if(bytes===0)return '0 KB';return bytes>=1048576?(bytes/1048576).toFixed(1)+' MB':Math.max(1,Math.round(bytes/1024))+' KB';}
 export function openTeachingStore(indexedDB=globalThis.indexedDB){return new Promise((resolve,reject)=>{if(!indexedDB)return reject(Error('Trình duyệt không hỗ trợ lưu file trên thiết bị.'));const request=indexedDB.open('little-lingua-teaching-v1',1);request.onupgradeneeded=()=>{for(const name of ['decks','files'])if(!request.result.objectStoreNames.contains(name))request.result.createObjectStore(name,{keyPath:'id'});};request.onerror=()=>reject(request.error);request.onblocked=()=>reject(Error('Đóng các tab trình chiếu cũ rồi tải lại để mở bộ nhớ.'));request.onsuccess=()=>resolve(new TeachingStore(request.result));});}
 export class TeachingStore{
  constructor(db){this.db=db;db.onversionchange=()=>db.close();}
