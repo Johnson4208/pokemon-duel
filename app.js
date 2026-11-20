@@ -244,7 +244,7 @@
     const validViews = ['today', 'learn', 'play', 'stories', 'progress', 'shop', 'profile', 'curriculum'];
     if (!validViews.includes(name)) name = 'today';
     $$('.view').forEach(view => view.classList.toggle('active', view.id === `view-${name}`));
-    $$('.nav-link').forEach(button => button.classList.toggle('active', button.dataset.view === name));
+    $$('.nav-link[data-view]').forEach(button => button.classList.toggle('active', button.dataset.view === name));
     $('#mobile-more').classList.toggle('active', !['today', 'learn', 'play', 'shop'].includes(name));
     const moreMenu = $('#mobile-more-dialog');
     if (moreMenu?.open) moreMenu.close();
@@ -609,7 +609,7 @@
   }
 
   // Navigation and learning controls.
-  $$('.nav-link').forEach(button => button.addEventListener('click', () => changeView(button.dataset.view)));
+  $$('.nav-link[data-view]').forEach(button => button.addEventListener('click', () => changeView(button.dataset.view)));
   $('#mobile-more').addEventListener('click', () => $('#mobile-more-dialog').showModal());
   $('#mobile-more-close').addEventListener('click', () => $('#mobile-more-dialog').close());
   $('#mobile-grownup-button').addEventListener('click', () => { $('#mobile-more-dialog').close(); openModal(); });
@@ -736,4 +736,5 @@
   }};
   initCategories();initGamePicker();updateDashboard();renderVocab();renderGameWordPicker();renderStory();
 })();
+
 
