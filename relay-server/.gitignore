@@ -1,0 +1,6 @@
+.dev.vars
+.dev.vars.*
+.wrangler/
+turnserver.conf
+*.pem
+*.key

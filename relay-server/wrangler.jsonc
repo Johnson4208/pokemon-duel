@@ -1,0 +1,12 @@
+{
+ "$schema":"../node_modules/wrangler/config-schema.json",
+ "name":"little-lingua-turn-access",
+ "main":"credential-worker.mjs",
+ "compatibility_date":"2026-11-20",
+ "vars":{
+  "ALLOWED_ORIGIN":"https://johnson4208.github.io",
+  "FIREBASE_PROJECT_ID":"little-lingua-ab674",
+  "TURN_HOST":"turn.your-domain.example"
+ },
+ "ratelimits":[{"name":"TURN_RATE_LIMITER","namespace_id":"1001","simple":{"limit":10,"period":60}}]
+}

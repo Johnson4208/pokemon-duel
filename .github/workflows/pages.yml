@@ -20,6 +20,8 @@ jobs:
         run: npm ci
       - name: Verify game and account logic
         run: node --test *.test.mjs
+      - name: Verify real browser room recovery
+        run: node scripts/test-network-browser.mjs
       - name: Assemble learning app with original audio
         run: |
           mkdir -p _site

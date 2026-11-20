@@ -1,0 +1,36 @@
+# This is a template. Copy outside the public repo, replace every placeholder,
+# and use a dedicated Linux relay host with a valid certificate for TURN_HOST.
+listening-port=3478
+tls-listening-port=443
+min-port=49160
+max-port=49200
+fingerprint
+use-auth-secret
+static-auth-secret=REPLACE_WITH_THE_SAME_RANDOM_SECRET_AS_THE_WORKER
+realm=turn.your-domain.example
+server-name=turn.your-domain.example
+cert=/etc/letsencrypt/live/turn.your-domain.example/fullchain.pem
+pkey=/etc/letsencrypt/live/turn.your-domain.example/privkey.pem
+no-tlsv1
+no-tlsv1_1
+no-loopback-peers
+no-multicast-peers
+no-cli
+no-tcp-relay
+# no-tcp-relay disables RFC6062 peer allocations, NOT client-to-TURN TCP/TLS.
+user-quota=4
+total-quota=200
+stale-nonce=600
+# Prevent relay access to private/metadata destinations. Keep this list aligned
+# with your network. Self-hosting requires outbound public UDP relay traffic.
+denied-peer-ip=0.0.0.0-0.255.255.255
+denied-peer-ip=10.0.0.0-10.255.255.255
+denied-peer-ip=100.64.0.0-100.127.255.255
+denied-peer-ip=127.0.0.0-127.255.255.255
+denied-peer-ip=169.254.0.0-169.254.255.255
+denied-peer-ip=172.16.0.0-172.31.255.255
+denied-peer-ip=192.168.0.0-192.168.255.255
+denied-peer-ip=::1
+denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+# If the host has 1:1 NAT, also set external-ip=PUBLIC_IP/PRIVATE_IP.
